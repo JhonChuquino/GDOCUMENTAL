@@ -135,14 +135,14 @@
 
     <script>
         const $ = i => document.getElementById(i);
-        const ST = { Ingresado: 'bg-brand-100 text-brand-700 ring-1 ring-brand-700/10', Prestado: 'bg-amber-100 text-amber-800 ring-1 ring-amber-700/10', Disponible: 'bg-emerald-100 text-emerald-800 ring-1 ring-emerald-700/10', Archivado: 'bg-slate-100 text-slate-600 ring-1 ring-slate-500/10' };
+        const ST = { Ingresado: 'bg-brand-100 text-brand-700 ring-1 ring-brand-700/10', Prestado: 'bg-amber-100 text-amber-800 ring-1 ring-amber-700/10', Disponible: 'bg-emerald-100 text-emerald-800 ring-1 ring-emerald-700/10', Archivado: 'bg-slate-100 text-slate-600 ring-1 ring-slate-500/10', 'Por validar': 'bg-blue-100 text-blue-800 ring-1 ring-blue-700/10' };
         const F = ['Expedientes de crédito', 'Contratos', 'Administración', 'Cobranza'];
         const K = ['Solicitud', 'Contrato', 'Informe', 'Garantía', 'Reporte'];
         const FC = ['text-brand-600 bg-brand-50 ring-brand-600/20', 'text-amber-600 bg-amber-50 ring-amber-600/20', 'text-purple-600 bg-purple-50 ring-purple-600/20', 'text-emerald-600 bg-emerald-50 ring-emerald-600/20'];
 
         const AI = { 'Documento cargado': 'upload', 'Archivo consultado': 'eye', 'Permisos actualizados': 'users', 'Acceso denegado': 'lock', 'Acceso solicitado': 'key', 'Acceso aprobado': 'check', 'Acceso rechazado': 'x', 'Préstamo registrado': 'swap', 'Devolución registrada': 'swap', 'Expediente cerrado': 'archive', 'Expediente reabierto': 'folder', 'Documento descargado': 'download', 'Respaldo creado': 'archive' };
-        const NAV = [['inicio', 'home', 'Inicio'], ['documentos', 'file', 'Documentos'], ['carpetas', 'folder', 'Carpetas'], ['usuarios', 'users', 'Usuarios y permisos', 1], ['solicitudes', 'key', 'Solicitudes de acceso', 1], ['auditoria', 'shield', 'Auditoría', 1], ['respaldos', 'archive', 'Respaldos', 1]];
-        const TT = { inicio: 'Panel principal', documentos: 'Documentos', carpetas: 'Carpetas', usuarios: 'Usuarios y permisos', solicitudes: 'Solicitudes de acceso', auditoria: 'Auditoría', respaldos: 'Respaldos' };
+        const NAV = [['inicio', 'home', 'Inicio'], ['documentos', 'file', 'Documentos'], ['carpetas', 'folder', 'Carpetas'], ['prestamos', 'swap', 'Préstamos'], ['usuarios', 'users', 'Usuarios y permisos', 1], ['solicitudes', 'key', 'Solicitudes de acceso', 1], ['auditoria', 'shield', 'Auditoría', 1], ['respaldos', 'archive', 'Respaldos', 1]];
+        const TT = { inicio: 'Panel principal', documentos: 'Documentos', carpetas: 'Carpetas', prestamos: 'Préstamos', usuarios: 'Usuarios y permisos', solicitudes: 'Solicitudes de acceso', auditoria: 'Auditoría', respaldos: 'Respaldos' };
 
         let U = [{ n: 'María Torres', r: 'Jefa de agencia', a: 1, s: 1 }, { n: 'Carlos Pérez', r: 'Asesor de crédito', a: 0, s: 0 }, { n: 'Ana Ruiz', r: 'Asesora de crédito', a: 0, s: 1 }, { n: 'Luis Vega', r: 'Responsable de archivo', a: 0, s: 0 }, { n: 'Rosa Díaz', r: 'Asesora de crédito', a: 0, s: 0 }];
         const mk = (id, n, f, t, k, g, b, rs, e) => ({ id, c: 'EXP-2026-' + String(id).padStart(3, '0'), n, f: F[f], t, k, g, b, rs, e, gr: [] });
@@ -150,9 +150,9 @@
         let now = Date.now();
         let L = [{ t: 'Documento cargado', d: 'EXP-2026-001', u: 'Carlos Pérez', ts: now - 6e5 }, { t: 'Archivo consultado', d: 'EXP-2026-002', u: 'María Torres', ts: now - 25e5 }, { t: 'Permisos actualizados', d: 'Ana Ruiz', u: 'María Torres', ts: now - 72e5 }, { t: 'Documento cargado', d: 'EXP-2026-003', u: 'Ana Ruiz', ts: now - 144e5 }];
         let Q = [];
+        let P = [{ id: 1, doc: 10, u: 'Rosa Díaz', ts_req: now - 900e5, ts_loan: now - 864e5, days: 5, st: 'Prestado' }];
         let B = [{ ts: now - 864e5, s: '12.4 MB' }, { ts: now - 1728e5, s: '12.1 MB' }];
-        let me, view = 'inicio', S = { q: '', c: '', k: '', e: '', g: '' }, tm, n = 12, V = {};
-        D[9].p = { u: 'Rosa Díaz', ts: now - 864e5 };
+        let me, view = 'inicio', S = { q: '', c: '', k: '', e: '', g: '', p: '' }, tm, n = 12, V = {};
 
         const phMap = { home: 'house', file: 'file-text', folder: 'folder', users: 'users', shield: 'shield', search: 'magnifying-glass', upload: 'upload-simple', eye: 'eye', download: 'download-simple', share: 'share-network', lock: 'lock', logout: 'sign-out', help: 'question', plus: 'plus', archive: 'archive', swap: 'arrows-left-right', check: 'check', x: 'x', key: 'key', bell: 'bell', clock: 'clock', 'warning-circle': 'warning-circle', 'chart-pie': 'chart-pie', 'chart-bar': 'chart-bar', 'trend-up': 'trend-up', list: 'list', funnel: 'funnel' };
         const ic = (x, cls = "w-5 h-5") => {
@@ -164,6 +164,7 @@
         const dt = g => new Date(Date.now() - g * 864e5).toLocaleDateString('es-PE');
         const ago = t => { const m = Math.round((Date.now() - t) / 6e4); return m < 1 ? 'Ahora' : m < 60 ? `Hace ${m} min` : m < 1440 ? `Hace ${Math.round(m / 60)} h` : `Hace ${Math.round(m / 1440)} d`; };
         const lg = (t, d, x) => L.unshift({ t, d, x, u: me.n, ts: Date.now() });
+        const isCust = () => me.a || me.r == 'Responsable de archivo';
         const can = d => !d.rs || me.a || me.s || d.gr.includes(me.n);
         const pend = () => Q.filter(x => x.st == 'Pendiente').length;
         const op = a => a.map(x => `<option>${x}</option>`).join('');
@@ -510,8 +511,9 @@
         };
 
         const alerts = () => {
-            const old = D.filter(d => d.e == 'Prestado').length;
-            const reqs = Q.length || 2;
+            if (!isCust()) return '';
+            const old = P.filter(p => p.st == 'Prestado' && (Date.now() - p.ts_loan > p.days * 864e5)).length;
+            const reqs = pend();
 
             return `<div class="bg-gradient-to-br from-amber-50 to-orange-50/50 border border-amber-200/60 rounded-3xl p-6 md:p-8 shadow-sm mt-8">
                 <h3 class="text-lg font-extrabold text-amber-900 flex items-center gap-2.5 mb-5">${ic('warning-circle', 'w-5 h-5 text-amber-500')} Alertas</h3>
@@ -578,7 +580,13 @@
 
         V.usuarios = () => `<div class="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden"><div class="p-6 border-b border-slate-200 bg-slate-50/50"><h3 class="text-lg font-extrabold text-slate-800">Control de Usuarios</h3><p class="text-sm text-slate-500 font-medium mt-1">Administra quién tiene acceso a los expedientes restringidos.</p></div><div class="overflow-x-auto p-6"><table class="w-full text-left border-collapse rounded-xl ring-1 ring-slate-200 overflow-hidden"><thead><tr class="bg-slate-50 border-b border-slate-200"><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Usuario</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Rol</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Ver expedientes restringidos</th></tr></thead><tbody class="divide-y divide-slate-100">${U.map((u, i) => `<tr class="hover:bg-slate-50 transition-colors"><td class="px-5 py-4"><div class="flex items-center gap-4">${av(u.n)}<div class="leading-tight"><div class="font-bold text-sm text-slate-800">${u.n}</div><div class="text-xs text-slate-500 font-medium mt-1">${u.r}</div></div></div></td><td class="px-5 py-4"><span class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap ${u.a ? 'bg-brand-100 text-brand-700 ring-1 ring-brand-700/10' : 'bg-slate-100 text-slate-600 ring-1 ring-slate-500/10'}">${u.a ? 'Administrador' : 'Usuario'}</span></td><td class="px-5 py-4 text-center"><input type="checkbox" class="sw mx-auto" ${u.s ? 'checked' : ''} ${u.a ? 'disabled' : ''} onchange="pm(${i},this.checked)"></td></tr>`).join('')}</tbody></table></div></div>`;
 
-        V.solicitudes = () => `<div class="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden"><div class="p-6 border-b border-slate-200 bg-slate-50/50"><h3 class="text-lg font-extrabold text-slate-800">Solicitudes de acceso</h3></div><div class="p-6">${Q.length ? `<div class="overflow-x-auto rounded-xl ring-1 ring-slate-200"><table class="w-full text-left border-collapse"><thead><tr class="bg-slate-50 border-b border-slate-200"><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Expediente</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Solicitante</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Fecha</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Estado</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Acciones</th></tr></thead><tbody class="divide-y divide-slate-100">${Q.map(q => { const d = D.find(x => x.id == q.doc); return `<tr class="hover:bg-slate-50 transition-colors"><td class="px-5 py-4 leading-tight"><div class="font-bold text-sm text-slate-800">${d.c}</div><div class="text-xs text-slate-500 font-medium mt-1">${d.n}</div></td><td class="px-5 py-4 text-sm text-slate-700 font-bold">${q.u}</td><td class="px-5 py-4 text-sm text-slate-500 font-medium">${ago(q.ts)}</td><td class="px-5 py-4"><span class="px-3 py-1.5 rounded-lg text-[11px] font-bold whitespace-nowrap ${q.st == 'Pendiente' ? 'bg-amber-100 text-amber-800 ring-1 ring-amber-700/10' : q.st == 'Aprobada' ? 'bg-emerald-100 text-emerald-800 ring-1 ring-emerald-700/10' : 'bg-red-100 text-red-800 ring-1 ring-red-700/10'}">${q.st}</span></td><td class="px-5 py-4 text-right whitespace-nowrap">${q.st == 'Pendiente' ? `<button class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs px-4 py-2 rounded-xl mr-2 transition-colors ring-1 ring-emerald-600/20" onclick="res(${q.id},1)">Aprobar</button><button class="bg-red-50 hover:bg-red-100 text-red-700 font-bold text-xs px-4 py-2 rounded-xl transition-colors ring-1 ring-red-600/20" onclick="res(${q.id},0)">Rechazar</button>` : ''}</td></tr>`; }).join('')}</tbody></table></div>` : '<div class="p-16 text-center text-slate-500"><div class="mx-auto w-16 h-16 mb-4 text-emerald-500 bg-emerald-50 rounded-full flex items-center justify-center shadow-sm">' + ic('check', 'w-8 h-8') + '</div><h4 class="text-lg font-bold text-slate-700">Todo al día</h4><p class="text-sm mt-1">No hay solicitudes pendientes por revisar.</p></div>'}</div></div>`;
+        V.prestamos = () => {
+            let list = isCust() ? P : P.filter(x => x.u == me.n);
+            if (S.p) list = list.filter(p => p.st == S.p);
+            return `<div class="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden"><div class="p-6 border-b border-slate-200 bg-slate-50/50 flex flex-wrap gap-4 justify-between items-center"><h3 class="text-lg font-extrabold text-slate-800">${isCust() ? 'Control de Préstamos' : 'Mis Préstamos'}</h3><select class="${inputCls} max-w-xs bg-white text-sm py-2" onchange="S.p=this.value; render()"><option value="">Todos los estados</option><option value="Solicitado" ${S.p=='Solicitado'?'selected':''}>Solicitados</option><option value="Prestado" ${S.p=='Prestado'?'selected':''}>Prestados</option><option value="Por validar" ${S.p=='Por validar'?'selected':''}>Por validar</option></select></div><div class="p-6">${list.length ? `<div class="overflow-x-auto rounded-xl ring-1 ring-slate-200"><table class="w-full text-left border-collapse"><thead><tr class="bg-slate-50 border-b border-slate-200"><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Expediente</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Usuario</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Estado / Vencimiento</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Acciones</th></tr></thead><tbody class="divide-y divide-slate-100">${list.map(p => { const d = D.find(x => x.id == p.doc); const exp = p.ts_loan + p.days * 864e5; const over = p.st == 'Prestado' && Date.now() > exp; return `<tr class="hover:bg-slate-50 cursor-pointer ${over ? 'bg-red-50/30' : ''}" onclick="ver(${p.doc})"><td class="px-5 py-4 font-bold text-sm ${over ? 'text-red-700' : ''}">${d.c}</td><td class="px-5 py-4 text-sm">${p.u == me.n ? 'Tú' : p.u}</td><td class="px-5 py-4"><span class="px-2 py-1 rounded text-[11px] font-bold ${p.st=='Prestado' ? (over ? 'bg-red-100 text-red-800 ring-1 ring-red-700/10' : 'bg-amber-100 text-amber-800') : p.st=='Por validar' ? 'bg-blue-100 text-blue-800' : p.st=='Solicitado' ? 'bg-slate-100 text-slate-800' : p.st=='Rechazado' ? 'bg-red-100 text-red-800' : 'bg-emerald-100 text-emerald-800'}">${p.st}</span>${p.st == 'Prestado' ? `<div class="text-[10px] ${over ? 'text-red-600 font-extrabold' : 'text-slate-500 font-bold'} mt-1 uppercase">${over ? ic('warning-circle','w-3 h-3') + ' Venció: ' : 'Vence: '}${new Date(exp).toLocaleDateString('es-PE')}</div>` : ''}</td><td class="px-5 py-4 text-right">${p.st == 'Solicitado' && isCust() ? `<button class="bg-emerald-50 text-emerald-700 font-bold px-3 py-1 rounded-lg text-xs mr-2 ring-1 ring-emerald-600/20" onclick="event.stopPropagation(); apLoan(${p.id},1)">Aprobar</button><button class="bg-red-50 text-red-700 font-bold px-3 py-1 rounded-lg text-xs ring-1 ring-red-600/20" onclick="event.stopPropagation(); apLoan(${p.id},0)">Rechazar</button>` : ''} ${p.st == 'Prestado' && p.u == me.n ? `<button class="bg-brand-100 text-brand-700 px-3 py-1.5 rounded-lg font-bold text-xs" onclick="event.stopPropagation(); retLoan(${p.id})">Declarar devolución</button>` : ''} ${p.st == 'Por validar' && isCust() ? `<button class="bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-lg font-bold text-xs" onclick="event.stopPropagation(); valLoan(${p.id})">Validar recepción</button>` : ''} ${p.st == 'Prestado' && isCust() ? `<button class="text-slate-500 font-bold text-xs hover:text-brand-600" onclick="event.stopPropagation(); valLoan(${p.id})">Recibir directo</button>` : ''}</td></tr>`; }).join('')}</tbody></table></div>` : '<div class="p-10 text-center text-slate-500">No hay préstamos con este filtro.</div>'}</div></div>`;
+        };
+
+        V.solicitudes = () => `<div class="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden"><div class="p-6 border-b border-slate-200 bg-slate-50/50"><h3 class="text-lg font-extrabold text-slate-800">Solicitudes de acceso</h3></div><div class="p-6">${Q.length ? `<div class="overflow-x-auto rounded-xl ring-1 ring-slate-200"><table class="w-full text-left border-collapse"><thead><tr class="bg-slate-50 border-b border-slate-200"><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Expediente</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Solicitante</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Fecha</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Estado</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Acciones</th></tr></thead><tbody class="divide-y divide-slate-100">${Q.map(q => { const d = D.find(x => x.id == q.doc); return `<tr class="hover:bg-slate-50 transition-colors cursor-pointer" onclick="ver(${q.doc})"><td class="px-5 py-4 leading-tight"><div class="font-bold text-sm text-slate-800">${d.c}</div><div class="text-xs text-slate-500 font-medium mt-1">${d.n}</div></td><td class="px-5 py-4 text-sm text-slate-700 font-bold">${q.u}</td><td class="px-5 py-4 text-sm text-slate-500 font-medium">${ago(q.ts)}</td><td class="px-5 py-4"><span class="px-3 py-1.5 rounded-lg text-[11px] font-bold whitespace-nowrap ${q.st == 'Pendiente' ? 'bg-amber-100 text-amber-800 ring-1 ring-amber-700/10' : q.st == 'Aprobada' ? 'bg-emerald-100 text-emerald-800 ring-1 ring-emerald-700/10' : 'bg-red-100 text-red-800 ring-1 ring-red-700/10'}">${q.st}</span></td><td class="px-5 py-4 text-right whitespace-nowrap">${q.st == 'Pendiente' ? `<button class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs px-4 py-2 rounded-xl mr-2 transition-colors ring-1 ring-emerald-600/20" onclick="event.stopPropagation(); res(${q.id},1)">Aprobar</button><button class="bg-red-50 hover:bg-red-100 text-red-700 font-bold text-xs px-4 py-2 rounded-xl transition-colors ring-1 ring-red-600/20" onclick="event.stopPropagation(); res(${q.id},0)">Rechazar</button>` : ''}</td></tr>`; }).join('')}</tbody></table></div>` : '<div class="p-16 text-center text-slate-500"><div class="mx-auto w-16 h-16 mb-4 text-emerald-500 bg-emerald-50 rounded-full flex items-center justify-center shadow-sm">' + ic('check', 'w-8 h-8') + '</div><h4 class="text-lg font-bold text-slate-700">Todo al día</h4><p class="text-sm mt-1">No hay solicitudes pendientes por revisar.</p></div>'}</div></div>`;
 
         V.auditoria = () => `<div class="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden"><div class="p-6 border-b border-slate-200 bg-slate-50/50"><h3 class="text-lg font-extrabold text-slate-800">Registro de Auditoría</h3><p class="text-sm text-slate-500 font-medium mt-1">Cada consulta o cambio queda registrado permanentemente.</p></div><div class="p-6">${L.map(act).join('')}</div></div>`;
 
@@ -586,46 +594,58 @@
 
         const ver = (id, q) => {
             const d = D.find(x => x.id == id);
-            const cust = me.a || me.r == 'Responsable de archivo';
-            if (!can(d)) {
+            const cust = isCust();
+            if (!can(d) && !cust) {
                 if (!q) lg('Acceso denegado', d.c);
-                const p = Q.find(x => x.doc == id && x.u == me.n && x.st == 'Pendiente');
+                const p = Q.find(x => x.doc == id && x.u == me.n);
+                const stMsg = p ? (p.st == 'Rechazada' ? '<div class="bg-red-50 text-red-800 font-bold py-3.5 px-4 rounded-xl text-sm ring-1 ring-red-600/20 mb-3">Solicitud denegada previamente</div>' : '<div class="bg-amber-50 text-amber-800 font-bold py-3.5 px-4 rounded-xl text-sm ring-1 ring-amber-600/20 mb-3">Solicitud en revisión</div>') : '';
+                const btn = (p && p.st == 'Pendiente') ? '' : `<button class="${btnCls} justify-center py-3.5" onclick="solic(${id})">${ic('key', 'w-5 h-5')} Solicitar acceso</button>`;
                 return mo(`
                     <div class="flex flex-col items-center text-center py-8">
                         <div class="w-24 h-24 rounded-3xl bg-red-50 text-red-500 flex items-center justify-center mb-6 shadow-inner ring-1 ring-red-100">${ic('lock', 'w-12 h-12')}</div>
                         <h3 class="text-2xl font-extrabold text-slate-800">Acceso Restringido</h3>
                         <p class="text-slate-500 mt-3 mb-8 max-w-sm font-medium leading-relaxed">El expediente <b>${d.c}</b> (${d.n}) requiere autorización especial.</p>
                         <div class="flex flex-col gap-3 w-full max-w-xs">
-                            ${p ? `<div class="bg-amber-50 text-amber-800 font-bold py-3.5 px-4 rounded-xl text-sm ring-1 ring-amber-600/20">Solicitud en revisión</div>` : `<button class="${btnCls} justify-center py-3.5" onclick="solic(${id})">${ic('key', 'w-5 h-5')} Solicitar acceso</button>`}
+                            ${stMsg}
+                            ${btn}
                             <button class="${btnGhostCls} justify-center py-3.5" onclick="cl()">Cerrar</button>
                         </div>
                     </div>`, 'Verificar permisos');
             }
             if (!q) lg('Archivo consultado', d.c);
 
+            const pr = P.find(x => x.doc == id && ['Prestado', 'Por validar'].includes(x.st));
+            
             mo(`
                 <div class="flex gap-5 items-center mb-8">
                     <div class="w-16 h-16 rounded-2xl text-white font-black text-sm flex items-center justify-center shrink-0 shadow-lg ${pillCls[d.t] || 'bg-slate-600'}">${d.t.toUpperCase()}</div>
-                    <div>
-                        <h3 class="text-2xl font-extrabold text-slate-800 leading-tight">${d.n}</h3>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-2xl font-extrabold text-slate-800 leading-tight pr-4">${d.n}</h3>
+                            ${can(d) && (cust || d.b == me.n) ? `<button class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg transition-colors shrink-0" onclick="edit(${id})" title="Editar metadatos">${ic('pencil-simple', 'w-4 h-4')}</button>` : ''}
+                        </div>
                         <div class="mt-2 flex items-center gap-2">
                             <span class="bg-slate-100 px-2.5 py-1 rounded-lg text-xs font-bold text-slate-600 border border-slate-200">${d.c}</span>
                         </div>
                     </div>
                 </div>
+                ${!can(d) && cust ? `<div class="bg-red-50 text-red-800 p-4 rounded-xl text-sm mb-5 flex items-start gap-3 ring-1 ring-red-600/20">${ic('lock', 'w-5 h-5 shrink-0 text-red-600')}<div class="font-medium leading-relaxed">No tienes permisos para ver o descargar el contenido de este expediente, pero puedes gestionar su estado físico.</div></div>` : ''}
                 <div class="grid grid-cols-2 gap-4 bg-slate-50 p-6 rounded-2xl border border-slate-200 mb-8 shadow-sm">
                     <div><span class="block text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Carpeta</span><span class="font-bold text-slate-800 text-sm flex items-center gap-1.5">${ic('folder', 'w-3.5 h-3.5 text-slate-400')}${d.f}</span></div>
                     <div><span class="block text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Tipo documental</span><span class="font-bold text-slate-800 text-sm flex items-center gap-1.5">${ic('file', 'w-3.5 h-3.5 text-slate-400')}${d.k}</span></div>
                     <div><span class="block text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Fecha de registro</span><span class="font-bold text-slate-800 text-sm">${dt(d.g)}</span></div>
                     <div><span class="block text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Cargado por</span><span class="font-bold text-slate-800 text-sm flex items-center gap-1.5">${ic('users', 'w-3.5 h-3.5 text-slate-400')}${d.b}</span></div>
-                    <div><span class="block text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1.5">Estado actual</span><span class="inline-block px-3 py-1 rounded-lg text-[11px] font-bold ${ST[d.e]}">${d.e}</span></div>
+                    <div><span class="block text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1.5">Estado actual</span><span class="inline-block px-3 py-1 rounded-lg text-[11px] font-bold ${ST[d.e] || 'bg-slate-100'}">${d.e}</span></div>
                     <div><span class="block text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1.5">Nivel de Acceso</span><span class="inline-flex px-3 py-1 rounded-lg items-center gap-1.5 text-[11px] font-bold ${d.rs ? 'bg-red-50 text-red-700 ring-1 ring-red-600/20' : 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20'}">${d.rs ? ic('lock', 'w-3.5 h-3.5') + 'Restringido' : ic('check', 'w-3.5 h-3.5') + 'General'}</span></div>
                 </div>
-                ${d.p ? `<div class="flex items-center gap-4 bg-amber-50 border border-amber-200 text-amber-800 p-5 rounded-2xl mb-8 text-sm shadow-sm"><div class="w-10 h-10 bg-amber-200/50 rounded-xl flex items-center justify-center shrink-0 text-amber-700">${ic('swap', 'w-5 h-5')}</div><div class="leading-tight">Expediente prestado a <b class="font-extrabold">${d.p.u}</b><div class="text-xs text-amber-700/80 mt-1 font-medium">Desde el ${new Date(d.p.ts).toLocaleDateString('es-PE')}</div></div></div>` : ''}
+                ${pr ? `<div class="flex items-center gap-4 bg-amber-50 border border-amber-200 text-amber-800 p-5 rounded-2xl mb-8 text-sm shadow-sm"><div class="w-10 h-10 bg-amber-200/50 rounded-xl flex items-center justify-center shrink-0 text-amber-700">${ic('swap', 'w-5 h-5')}</div><div class="leading-tight">Expediente prestado a <b class="font-extrabold">${pr.u}</b><div class="text-xs text-amber-700/80 mt-1 font-medium">Vence: ${new Date(pr.ts_loan + pr.days * 864e5).toLocaleDateString('es-PE')} &bull; Plazo: ${pr.days} días${pr.m ? ' &bull; ' + pr.m : ''}</div></div></div>` : ''}
                 
                 <div class="flex flex-wrap gap-3 mb-8 items-center">
-                    ${d.e == 'Prestado' ? (cust ? `<button class="${btnCls}" onclick="st(${id},'ret')">${ic('swap', 'w-4 h-4')} Registrar devolución</button>` : `<div class="bg-slate-100 text-slate-500 font-bold py-2.5 px-4 rounded-xl text-sm ring-1 ring-slate-200 flex items-center gap-2">${ic('lock', 'w-4 h-4')} Solo archivo/admin reciben devoluciones</div>`) : d.e != 'Archivado' ? (cust ? `<button class="${btnCls} bg-amber-500 hover:bg-amber-600 shadow-amber-500/20" onclick="mdLoan(${id})">${ic('swap', 'w-4 h-4')} Prestar expediente</button>` : `<div class="bg-slate-100 text-slate-500 font-bold py-2.5 px-4 rounded-xl text-sm ring-1 ring-slate-200 flex items-center gap-2">${ic('lock', 'w-4 h-4')} Solo archivo/admin prestan expedientes</div>`) : ''}
-                    ${cust ? (d.e == 'Archivado' ? `<button class="${btnGhostCls} border border-slate-200" onclick="st(${id},'open')">Reabrir expediente</button>` : `<button class="${btnGhostCls} border border-slate-200" onclick="st(${id},'close')">${ic('archive', 'w-4 h-4')} Cerrar expediente</button>`) : ''}
+                    ${d.e == 'Ingresado' ? (cust ? `<button class="${btnCls}" onclick="st(${id},'verify')">${ic('check', 'w-4 h-4')} Validar Recepción</button>` : '') : ''}
+                    ${d.e == 'Disponible' ? `<button class="${btnCls} bg-amber-500 hover:bg-amber-600 shadow-amber-500/20" onclick="solicLoan(${id})">${ic('swap', 'w-4 h-4')} Solicitar Préstamo</button>` : ''}
+                    ${cust && d.e == 'Disponible' ? `<button class="${btnGhostCls} border border-slate-200" onclick="st(${id},'close')">${ic('archive', 'w-4 h-4')} Archivar expediente</button>` : ''}
+                    ${cust && d.e == 'Archivado' ? `<button class="${btnGhostCls} border border-slate-200" onclick="st(${id},'open')">Reabrir expediente</button>` : ''}
+                    ${cust && d.e == 'Prestado' ? `<button class="${btnGhostCls} border border-slate-200" onclick="valLoan(${pr.id})">Recibir directo</button>` : ''}
                 </div>
                 
                 <h4 class="text-sm font-extrabold text-slate-800 mb-4 flex items-center gap-2 border-t border-slate-100 pt-8">${ic('shield', 'w-4 h-4 text-brand-500')} Historial reciente</h4>
@@ -635,31 +655,87 @@
             `, 'Detalle del Documento');
         };
 
-        const mdLoan = id => {
+        const edit = id => {
             const d = D.find(x => x.id == id);
             mo(`
                 <div class="mb-6">
-                    <div class="bg-amber-50 text-amber-800 p-4 rounded-xl text-sm mb-5 flex items-start gap-3 ring-1 ring-amber-600/20">
-                        ${ic('help', 'w-5 h-5 shrink-0 text-amber-600')}
-                        <div class="font-medium leading-relaxed">Estás a punto de registrar la entrega <b>física</b> del expediente ${d.c}.</div>
-                    </div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Entregar físicamente a:</label>
-                    <select id="lu" class="${inputCls} bg-slate-50 cursor-pointer font-medium">
-                        ${U.filter(u => u.n !== me.n).map(u => `<option value="${u.n}">${u.n} (${u.r})</option>`).join('')}
-                    </select>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Nombre del documento</label>
+                    <input id="en" value="${d.n}" class="${inputCls} bg-slate-50 font-medium">
                 </div>
-                <div class="flex gap-3 justify-end pt-5 border-t border-slate-100">
+                <div class="mb-6">
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Carpeta</label>
+                    <select id="ef" class="${inputCls} bg-slate-50">${F.map((f,i)=>`<option value="${i}" ${F[i]==d.f?'selected':''}>${f}</option>`).join('')}</select>
+                </div>
+                <div class="mb-8">
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Tipo documental</label>
+                    <select id="et" class="${inputCls} bg-slate-50">${K.map(k=>`<option ${k==d.k?'selected':''}>${k}</option>`).join('')}</select>
+                </div>
+                <div class="flex justify-end gap-3">
                     <button class="${btnGhostCls}" onclick="ver(${id},1)">Cancelar</button>
-                    <button class="${btnCls} bg-amber-500 hover:bg-amber-600 shadow-amber-500/20" onclick="st(${id},'loan',$('lu').value)">${ic('check', 'w-4 h-4')} Confirmar préstamo</button>
+                    <button class="${btnCls}" onclick="svEdit(${id})">Guardar cambios</button>
                 </div>
-            `, 'Registrar Préstamo Físico');
+            `, 'Editar Expediente');
         };
 
-        const st = (id, a, u) => {
+        const svEdit = id => {
             const d = D.find(x => x.id == id);
-            if (a == 'loan') { d.e = 'Prestado'; d.p = { u: u, ts: Date.now() }; lg('Préstamo registrado', d.c, u); }
-            if (a == 'ret') { d.e = 'Disponible'; d.p = null; lg('Devolución registrada', d.c); }
-            if (a == 'close') { d.e = 'Archivado'; d.p = null; lg('Expediente cerrado', d.c); }
+            const n = $('en').value.trim();
+            if (!n) return tt('Ingresa un nombre', 'warning-circle');
+            d.n = n; d.f = F[$('ef').value]; d.k = $('et').value;
+            lg('Metadatos actualizados', d.c); tt('Expediente actualizado', 'check');
+            ver(id, 1); render();
+        };
+
+        const solicLoan = id => {
+            mo(`
+                <div class="mb-6">
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Días requeridos</label>
+                    <input type="number" id="ld" value="3" class="${inputCls} bg-slate-50">
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 mb-2">Motivo</label>
+                    <input type="text" id="lm" placeholder="Ej. Revisión de cliente" class="${inputCls} bg-slate-50">
+                </div>
+                <div class="flex justify-end gap-3"><button class="${btnGhostCls}" onclick="ver(${id},1)">Cancelar</button><button class="${btnCls}" onclick="mkLoan(${id})">Enviar solicitud</button></div>
+            `, 'Solicitar Préstamo');
+        };
+        const mkLoan = id => {
+            const days = parseInt($('ld').value) || 3;
+            const mot = $('lm').value.trim() || 'Sin motivo';
+            P.unshift({ id: Date.now(), doc: id, u: me.n, ts_req: Date.now(), days: days, st: 'Solicitado', m: mot });
+            lg('Préstamo solicitado', D.find(x=>x.id==id).c);
+            tt('Solicitud de préstamo enviada', 'check');
+            cl(); render();
+        };
+        const apLoan = (pid, ok) => {
+            const p = P.find(x => x.id == pid);
+            const d = D.find(x => x.id == p.doc);
+            if (ok) {
+                p.st = 'Prestado'; p.ts_loan = Date.now(); d.e = 'Prestado';
+                lg('Préstamo aprobado', d.c, p.u);
+            } else {
+                p.st = 'Rechazado';
+                lg('Préstamo rechazado', d.c, p.u);
+            }
+            render();
+        };
+        const retLoan = (pid) => {
+            const p = P.find(x => x.id == pid);
+            const d = D.find(x => x.id == p.doc);
+            p.st = 'Por validar'; d.e = 'Por validar';
+            lg('Devolución declarada', d.c);
+            render();
+        };
+        const valLoan = (pid) => {
+            const p = P.find(x => x.id == pid);
+            const d = D.find(x => x.id == p.doc);
+            p.st = 'Cerrado'; p.ts_ret = Date.now(); d.e = 'Disponible';
+            lg('Devolución verificada', d.c);
+            render();
+        };
+
+        const st = (id, a) => {
+            const d = D.find(x => x.id == id);
+            if (a == 'verify') { d.e = 'Disponible'; lg('Recepción verificada', d.c); }
+            if (a == 'close') { d.e = 'Archivado'; lg('Expediente cerrado', d.c); }
             if (a == 'open') { d.e = 'Disponible'; lg('Expediente reabierto', d.c); }
             ver(id, 1); render();
         };
@@ -727,7 +803,7 @@
             const nm = $('un').value.trim();
             if (!nm) return tt('Error: Escribe el nombre del documento', 'x');
             n++;
-            const d = { id: n, c: 'EXP-2026-' + String(n).padStart(3, '0'), n: nm, f: $('uf').value, t: $('ut').value, k: $('uk').value, g: 0, b: me.n, rs: $('ur').checked ? 1 : 0, e: 'Ingresado', gr: [] };
+            const d = { id: n, c: 'EXP-2026-' + String(n).padStart(3, '0'), n: nm, f: $('uf').value, t: $('ut').value, k: $('uk').value, g: 0, b: me.n, rs: $('ur').checked ? 1 : 0, e: 'Ingresado', gr: $('ur').checked ? [me.n] : [] };
             D.unshift(d);
             lg('Documento cargado', d.c);
             cl();
