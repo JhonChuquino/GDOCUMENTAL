@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Financiera Solución · Gestión documentaria</title>
+    <title>DAMMA · Gestión documental</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
@@ -15,7 +15,7 @@
                 extend: {
                     fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
                     colors: {
-                        brand: { 50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3', 900: '#312e81', 950: '#1e1b4b' }
+                        brand: { 50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc', 400: '#38bdf8', 500: '#0ea5e9', 600: '#1d6fd8', 700: '#185bb8', 800: '#134a94', 900: '#0b3a6e', 950: '#072a52' }
                     }
                 }
             }
@@ -108,29 +108,94 @@
         .animate-modal-in {
             animation: modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
+
+        body {
+            background: radial-gradient(1200px 600px at 100% -10%, #bae6fd66, transparent 60%),
+                radial-gradient(900px 500px at -10% 110%, #93c5fd55, transparent 60%),
+                #f0f8ff;
+            background-attachment: fixed;
+        }
+
+        .stg>* {
+            opacity: 0;
+            animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .stg>*:nth-child(2) { animation-delay: 70ms; }
+        .stg>*:nth-child(3) { animation-delay: 140ms; }
+        .stg>*:nth-child(4) { animation-delay: 210ms; }
+        .stg>*:nth-child(5) { animation-delay: 280ms; }
+        .stg>*:nth-child(n+6) { animation-delay: 340ms; }
+
+        @keyframes barUp {
+            from { transform: scaleY(0); }
+            to { transform: scaleY(1); }
+        }
+
+        .bar-up {
+            transform-origin: bottom;
+            animation: barUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateY(16px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .toast-in {
+            animation: toastIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes floaty {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-12px, 10px); }
+        }
+
+        .floaty {
+            animation: floaty 9s ease-in-out infinite;
+        }
+
+        .dz-over {
+            border-color: #0ea5e9 !important;
+            background: #e0f2fe !important;
+            transform: scale(1.01);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-delay: 0ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
 
-<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+<body class="text-slate-800 font-sans antialiased">
     <div id="login" class="min-h-screen grid grid-cols-1 md:grid-cols-2"></div>
     <div id="app" class="hidden min-h-screen grid grid-cols-1 md:grid-cols-[260px_1fr]">
         <div id="sd-overlay"
             class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"
             onclick="$('sd').classList.add('-translate-x-full'); this.classList.add('hidden');"></div>
         <aside id="sd"
-            class="fixed md:sticky top-0 left-0 h-screen w-[260px] transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out z-50 bg-brand-950/95 backdrop-blur-3xl border-r border-white/5 text-slate-300 p-6 flex flex-col gap-6 overflow-y-auto shadow-2xl md:shadow-none">
+            class="fixed md:sticky top-0 left-0 h-screen w-[260px] transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out z-50 bg-gradient-to-b from-brand-900 via-brand-950 to-[#051d3a] border-r border-white/5 text-sky-100 p-6 flex flex-col gap-6 overflow-y-auto shadow-2xl md:shadow-none">
         </aside>
         <main id="mn" class="p-4 md:p-8 min-w-0 max-w-7xl mx-auto w-full pb-20 overflow-x-hidden"></main>
     </div>
     <div id="modal"
         class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex justify-end z-50 transition-opacity"
         onclick="event.target==this&&cl()">
-        <div class="bg-white w-full max-w-md h-full shadow-2xl flex flex-col relative transform translate-x-full transition-transform duration-300 ease-out"
+        <div class="bg-white w-full max-w-md h-full shadow-2xl flex flex-col relative transform translate-x-full transition-all duration-300 ease-out"
             id="mb"></div>
     </div>
 
+    <div id="vw" class="hidden fixed inset-0 z-[55] flex bg-[#0b1220] overflow-hidden animate-fade-in"
+        role="dialog" aria-modal="true" aria-label="Visor de documento"></div>
+
     <div id="toast"
-        class="hidden fixed bottom-6 right-6 bg-slate-900 text-white px-5 py-3 rounded-xl z-50 shadow-xl font-medium transition-all transform scale-100 flex items-center gap-3 border border-slate-700">
+        class="hidden fixed bottom-6 right-6 left-6 sm:left-auto bg-brand-950 text-white px-5 py-3.5 rounded-2xl z-[60] shadow-2xl shadow-brand-900/30 font-medium flex items-center gap-3 border border-brand-700/60 border-l-4 border-l-brand-400"
+        role="status" aria-live="polite">
     </div>
 
     <script>
@@ -138,9 +203,9 @@
         const ST = { Ingresado: 'bg-brand-100 text-brand-700 ring-1 ring-brand-700/10', Prestado: 'bg-amber-100 text-amber-800 ring-1 ring-amber-700/10', Disponible: 'bg-emerald-100 text-emerald-800 ring-1 ring-emerald-700/10', Archivado: 'bg-slate-100 text-slate-600 ring-1 ring-slate-500/10', 'Por validar': 'bg-blue-100 text-blue-800 ring-1 ring-blue-700/10' };
         const F = ['Expedientes de crédito', 'Contratos', 'Administración', 'Cobranza'];
         const K = ['Solicitud', 'Contrato', 'Informe', 'Garantía', 'Reporte'];
-        const FC = ['text-brand-600 bg-brand-50 ring-brand-600/20', 'text-amber-600 bg-amber-50 ring-amber-600/20', 'text-purple-600 bg-purple-50 ring-purple-600/20', 'text-emerald-600 bg-emerald-50 ring-emerald-600/20'];
+        const FC = ['text-brand-600 bg-brand-50 ring-brand-600/20', 'text-sky-600 bg-sky-50 ring-sky-600/20', 'text-cyan-700 bg-cyan-50 ring-cyan-600/20', 'text-blue-700 bg-blue-50 ring-blue-600/20'];
 
-        const AI = { 'Documento cargado': 'upload', 'Archivo consultado': 'eye', 'Permisos actualizados': 'users', 'Acceso denegado': 'lock', 'Acceso solicitado': 'key', 'Acceso aprobado': 'check', 'Acceso rechazado': 'x', 'Préstamo registrado': 'swap', 'Devolución registrada': 'swap', 'Expediente cerrado': 'archive', 'Expediente reabierto': 'folder', 'Documento descargado': 'download', 'Respaldo creado': 'archive' };
+        const AI = { 'Usuario creado': 'user-plus', 'Usuario editado': 'user-gear', 'Usuario desactivado': 'user-minus', 'Usuario reactivado': 'user-check', 'Archivo adjuntado': 'paperclip', 'Documento cargado': 'upload', 'Archivo consultado': 'eye', 'Permisos actualizados': 'users', 'Acceso denegado': 'lock', 'Acceso solicitado': 'key', 'Acceso aprobado': 'check', 'Acceso rechazado': 'x', 'Préstamo registrado': 'swap', 'Devolución registrada': 'swap', 'Expediente cerrado': 'archive', 'Expediente reabierto': 'folder', 'Documento descargado': 'download', 'Respaldo creado': 'archive' };
         const NAV = [['inicio', 'home', 'Inicio'], ['documentos', 'file', 'Documentos'], ['carpetas', 'folder', 'Carpetas'], ['prestamos', 'swap', 'Préstamos'], ['usuarios', 'users', 'Usuarios y permisos', 1], ['solicitudes', 'key', 'Solicitudes de acceso', 1], ['auditoria', 'shield', 'Auditoría', 1], ['respaldos', 'archive', 'Respaldos', 1]];
         const TT = { inicio: 'Panel principal', documentos: 'Documentos', carpetas: 'Carpetas', prestamos: 'Préstamos', usuarios: 'Usuarios y permisos', solicitudes: 'Solicitudes de acceso', auditoria: 'Auditoría', respaldos: 'Respaldos' };
 
@@ -153,6 +218,50 @@
         let P = [{ id: 1, doc: 10, u: 'Rosa Díaz', ts_req: now - 900e5, ts_loan: now - 864e5, days: 5, st: 'Prestado' }];
         let B = [{ ts: now - 864e5, s: '12.4 MB' }, { ts: now - 1728e5, s: '12.1 MB' }];
         let me, view = 'inicio', S = { q: '', c: '', k: '', e: '', g: '', p: '' }, tm, n = 12, V = {};
+        let lastView = null, UF = null, FR = false;
+
+        // ---------- Persistencia: datos en localStorage, archivos en IndexedDB ----------
+        const SK = 'damma.v1';
+        const save = () => { try { localStorage.setItem(SK, JSON.stringify({ U, D, L, Q, P, B, n })); } catch (e) { } };
+        const load = () => {
+            try {
+                const s = JSON.parse(localStorage.getItem(SK) || 'null');
+                if (!s) return;
+                U = s.U; D.splice(0, D.length, ...s.D); L = s.L; Q = s.Q; P = s.P; B = s.B; n = s.n;
+            } catch (e) { }
+        };
+        load();
+
+        const FILES = {};
+        let idb = null;
+        const idbOpen = () => new Promise(r => {
+            try {
+                const q = indexedDB.open('damma-files', 1);
+                q.onupgradeneeded = () => q.result.createObjectStore('f');
+                q.onsuccess = () => { idb = q.result; r(); };
+                q.onerror = () => r();
+            } catch (e) { r(); }
+        });
+        const idbPut = (k, v) => { try { idb && idb.transaction('f', 'readwrite').objectStore('f').put(v, k); } catch (e) { } };
+        const idbLoadAll = () => new Promise(r => {
+            if (!idb) return r();
+            try {
+                const c = idb.transaction('f').objectStore('f').openCursor();
+                c.onsuccess = () => { const x = c.result; if (x) { FILES[x.key] = x.value; x.continue(); } else r(); };
+                c.onerror = () => r();
+            } catch (e) { r(); }
+        });
+        const resetDemo = () => {
+            if (!confirm('Se borrarán todos los documentos, archivos y usuarios agregados, y volverán los datos de ejemplo. ¿Continuar?')) return;
+            try { localStorage.removeItem(SK); idb && idb.transaction('f', 'readwrite').objectStore('f').clear(); } catch (e) { }
+            location.reload();
+        };
+
+        const clean = s => String(s || '').replace(/[<>"'`\\]/g, '').trim();
+        const fsz = b => b < 1024 ? b + ' B' : b < 1048576 ? (b / 1024).toFixed(0) + ' KB' : (b / 1048576).toFixed(1) + ' MB';
+        const MAXF = 10 * 1048576;
+        const EXT = ['pdf', 'docx', 'xlsx', 'jpg', 'jpeg', 'png'];
+        const active = () => U.filter(u => !u.x);
 
         const phMap = { home: 'house', file: 'file-text', folder: 'folder', users: 'users', shield: 'shield', search: 'magnifying-glass', upload: 'upload-simple', eye: 'eye', download: 'download-simple', share: 'share-network', lock: 'lock', logout: 'sign-out', help: 'question', plus: 'plus', archive: 'archive', swap: 'arrows-left-right', check: 'check', x: 'x', key: 'key', bell: 'bell', clock: 'clock', 'warning-circle': 'warning-circle', 'chart-pie': 'chart-pie', 'chart-bar': 'chart-bar', 'trend-up': 'trend-up', list: 'list', funnel: 'funnel' };
         const ic = (x, cls = "w-5 h-5") => {
@@ -171,8 +280,10 @@
 
         const tt = (m, icon = 'check') => {
             const e = $('toast');
-            e.innerHTML = ic(icon, 'w-5 h-5 text-brand-400') + m;
-            e.classList.remove('hidden');
+            e.innerHTML = ic(icon, 'w-5 h-5 text-brand-300') + `<span class="text-sm">${m}</span>`;
+            e.classList.remove('hidden', 'toast-in');
+            void e.offsetWidth;
+            e.classList.add('toast-in');
             clearTimeout(tm);
             tm = setTimeout(() => e.classList.add('hidden'), 3000);
         };
@@ -184,7 +295,9 @@
             return `<div class="relative inline-flex shrink-0"><div class="${size} rounded-full bg-brand-100 text-brand-700 font-bold flex items-center justify-center shadow-inner border-2 border-white">${i}</div><div class="absolute bottom-0 right-0 ${dot} bg-emerald-500 border-2 border-white rounded-full shadow-sm"></div></div>`;
         };
 
-        const mo = (h, title) => {
+        const mo = (h, title, wide) => {
+            $('mb').classList.toggle('max-w-2xl', !!wide);
+            $('mb').classList.toggle('max-w-md', !wide);
             $('mb').innerHTML = `
                 <div class="flex items-center justify-between p-6 border-b border-slate-100 bg-white sticky top-0 z-10">
                     <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">${title}</h3>
@@ -197,6 +310,7 @@
         };
 
         const cl = () => {
+            UF = null;
             $('mb').classList.add('translate-x-full');
             setTimeout(() => {
                 $('modal').classList.add('hidden');
@@ -212,20 +326,21 @@
             $('sd-overlay').classList.add('hidden');
         };
 
-        const btnCls = "inline-flex items-center justify-center gap-2 bg-brand-600 text-white font-semibold py-2.5 px-5 rounded-2xl hover:bg-brand-700 transition-all shadow-sm shadow-brand-600/20 active:scale-95";
-        const btnGhostCls = "inline-flex items-center justify-center gap-2 bg-slate-100 text-slate-700 font-semibold py-2.5 px-5 rounded-2xl hover:bg-slate-200 transition-all active:scale-95";
+        const btnCls = "inline-flex whitespace-nowrap items-center justify-center gap-2 bg-gradient-to-r from-brand-600 to-brand-500 text-white font-semibold py-2.5 px-5 rounded-2xl hover:from-brand-700 hover:to-brand-600 hover:shadow-lg hover:shadow-brand-500/30 hover:-translate-y-0.5 transition-all shadow-sm shadow-brand-600/20 active:scale-95 active:translate-y-0";
+        const btnGhostCls = "inline-flex whitespace-nowrap items-center justify-center gap-2 bg-slate-100 text-slate-700 font-semibold py-2.5 px-5 rounded-2xl hover:bg-slate-200 transition-all active:scale-95";
         const inputCls = "border border-slate-200 rounded-2xl px-4 py-2.5 bg-white w-full focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition-shadow text-sm text-slate-700";
         const selectCls = inputCls + " appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_1rem_center] bg-[length:1.2em_1.2em] pr-10";
 
         const lgn = () => {
             $('login').innerHTML = `
-            <div class="bg-gradient-to-br from-brand-950 via-brand-900 to-brand-800 text-white p-12 md:p-20 flex flex-col justify-center relative overflow-hidden hidden md:flex">
-                <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
+            <div class="bg-gradient-to-br from-brand-950 via-brand-800 to-brand-500 text-white p-12 md:p-20 flex flex-col justify-center relative overflow-hidden hidden md:flex">
+                <div class="floaty absolute top-0 right-0 -mr-24 -mt-24 w-[28rem] h-[28rem] bg-sky-300/25 rounded-full blur-3xl"></div>
+                <div class="floaty absolute bottom-0 left-0 -ml-24 -mb-24 w-80 h-80 bg-blue-400/25 rounded-full blur-3xl" style="animation-delay:-4s"></div>
                 <div class="relative z-10 flex flex-col gap-6 max-w-lg">
                     <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-400 to-brand-500 flex items-center justify-center shadow-lg">${ic('folder', 'w-6 h-6 text-white')}</div>
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-300 to-brand-500 flex items-center justify-center shadow-lg shadow-sky-500/30 ring-1 ring-white/30">${ic('folder', 'w-6 h-6 text-white')}</div>
                         <div>
-                            <h2 class="font-bold text-xl leading-tight tracking-tight">Financiera Solución</h2>
+                            <h2 class="font-extrabold text-2xl leading-tight tracking-[0.2em]">DAMMA</h2>
                             <span class="text-brand-200 text-sm font-medium">Agencia Tingo María</span>
                         </div>
                     </div>
@@ -236,16 +351,20 @@
                     </div>
                 </div>
             </div>
-            <div class="flex flex-col items-center justify-center p-8 bg-slate-50 w-full relative">
-                <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNlNWEwY2MiIGZpbGwtb3BhY2l0eT0iLjQiLz48L3N2Zz4=')] opacity-50"></div>
-                <div class="w-full max-w-md flex flex-col gap-4 relative z-10">
+            <div class="flex flex-col items-center justify-center p-8 w-full relative">
+                <div class="absolute inset-0 bg-[radial-gradient(#7dd3fc_1px,transparent_1px)] [background-size:20px_20px] opacity-40"></div>
+                <div class="w-full max-w-md flex flex-col gap-4 relative z-10 stg">
                     <div class="mb-6 text-center md:text-left">
-                        <h3 class="text-2xl font-extrabold text-slate-800 tracking-tight">Ingresar al sistema</h3>
+                        <div class="md:hidden inline-flex items-center gap-3 mb-6">
+                            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-sky-400 to-brand-600 flex items-center justify-center shadow-lg shadow-sky-500/30">${ic('folder', 'w-5 h-5 text-white')}</div>
+                            <span class="font-extrabold text-2xl tracking-[0.2em] text-brand-900">DAMMA</span>
+                        </div>
+                        <h3 class="text-2xl font-extrabold text-brand-950 tracking-tight">Ingresar al sistema</h3>
                         <p class="text-slate-500 text-sm mt-1">Elige un usuario para probar la plataforma</p>
                     </div>
-                    ${U.map((u, i) => `
-                    <button class="flex items-center gap-4 p-4 border border-slate-200 rounded-2xl bg-white/80 backdrop-blur hover:border-brand-500 hover:shadow-lg hover:shadow-brand-500/10 transition-all text-left group" onclick="enter(${i})">
-                        <div class="w-12 h-12 rounded-full bg-slate-800 text-white flex items-center justify-center font-bold text-sm shrink-0 group-hover:scale-110 transition-transform shadow-inner">${ini(u.n)}</div>
+                    ${U.map((u, i) => u.x ? '' : `
+                    <button class="flex items-center gap-4 p-4 border border-sky-100 rounded-2xl bg-white/85 backdrop-blur hover:border-brand-400 hover:shadow-xl hover:shadow-brand-500/15 hover:-translate-y-0.5 active:scale-[0.99] transition-all text-left group" onclick="enter(${i})">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-brand-600 to-sky-400 text-white flex items-center justify-center font-bold text-sm shrink-0 group-hover:scale-110 transition-transform shadow-md shadow-sky-500/20">${ini(u.n)}</div>
                         <div class="flex-1">
                             <div class="font-bold text-slate-800 group-hover:text-brand-600 transition-colors">${u.n}</div>
                             <div class="text-xs text-slate-500 font-medium mt-0.5">${u.r}</div>
@@ -263,54 +382,79 @@
         const render = () => {
             $('sd').innerHTML = `
                 <div class="flex items-center gap-3 px-2 mb-6 mt-2">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center shadow-lg shadow-brand-500/20">${ic('folder', 'w-5 h-5 text-white')}</div>
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-300 to-brand-500 flex items-center justify-center shadow-lg shadow-sky-500/30 ring-1 ring-white/20">${ic('folder', 'w-5 h-5 text-white')}</div>
                     <div>
-                        <h2 class="font-bold text-white leading-tight tracking-tight text-sm">Financiera Solución</h2>
-                        <div class="text-brand-200/50 text-[10px] uppercase font-bold tracking-wider mt-0.5">Agencia Tingo María</div>
+                        <h2 class="font-extrabold text-white leading-tight tracking-[0.2em] text-lg">DAMMA</h2>
+                        <div class="text-sky-200/60 text-[10px] uppercase font-bold tracking-wider mt-0.5">Agencia Tingo María</div>
                     </div>
                 </div>
                 <nav class="flex flex-col gap-1.5 flex-1">
                     ${NAV.filter(x => !x[3] || me.a).map(x => `
-                    <a class="flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all text-sm font-medium ${view == x[0] ? 'bg-brand-600 text-white shadow-md shadow-brand-900/20' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'}" onclick="go('${x[0]}','')">
-                        ${ic(x[1], `w-5 h-5 ${view == x[0] ? 'text-white' : 'text-slate-500'}`)} ${x[2]}
-                        ${x[0] == 'solicitudes' && pend() ? `<span class="ml-auto bg-red-500 text-white rounded-full text-[10px] font-bold px-2 py-0.5 shadow-sm">${pend()}</span>` : ''}
+                    <a class="relative flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all duration-200 text-sm font-semibold ${view == x[0] ? 'bg-gradient-to-r from-sky-400 to-sky-300 text-brand-950 shadow-lg shadow-sky-500/25' : 'text-sky-100/70 hover:bg-white/10 hover:text-white hover:translate-x-1'}" onclick="go('${x[0]}','')">
+                        ${ic(x[1], `w-5 h-5 ${view == x[0] ? 'text-brand-900' : 'text-sky-300/70'}`)} ${x[2]}
+                        ${x[0] == 'solicitudes' && pend() ? `<span class="ml-auto bg-red-500 text-white rounded-full text-[10px] font-bold px-2 py-0.5 shadow-sm animate-pulse">${pend()}</span>` : ''}
                     </a>`).join('')}
                 </nav>
-                <div class="mt-auto pt-6 border-t border-slate-800/50 mb-2">
-                    <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-800/30 border border-slate-700/50 mb-4">
-                        <div class="w-8 h-8 rounded-full bg-slate-700 text-white flex items-center justify-center font-bold text-xs">${ini(me.n)}</div>
+                <div class="mt-auto pt-6 border-t border-white/10 mb-2">
+                    <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/10 mb-4">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-sky-400 to-brand-600 text-white flex items-center justify-center font-bold text-xs">${ini(me.n)}</div>
                         <div class="leading-tight flex-1 overflow-hidden">
                             <div class="font-bold text-sm text-white truncate">${me.n}</div>
-                            <div class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold truncate">${me.a ? 'Administrador' : 'Usuario'}</div>
+                            <div class="text-[10px] text-sky-200/60 uppercase tracking-wider font-semibold truncate">${me.a ? 'Administrador' : 'Usuario'}</div>
                         </div>
                     </div>
                     <nav class="flex flex-col gap-1">
-                        <a class="flex items-center gap-3 px-4 py-2.5 rounded-xl cursor-pointer text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 transition-colors text-sm font-medium" onclick="tt('Prototipo conceptual: sin ayuda real', 'help')">${ic('help')} Centro de ayuda</a>
-                        <a class="flex items-center gap-3 px-4 py-2.5 rounded-xl cursor-pointer text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-colors text-sm font-medium" onclick="out()">${ic('logout')} Cerrar sesión</a>
+                        <a class="flex items-center gap-3 px-4 py-2.5 rounded-xl cursor-pointer text-sky-100/70 hover:bg-white/10 hover:text-white transition-colors text-sm font-medium" onclick="tt('Prototipo conceptual: sin ayuda real', 'help')">${ic('help')} Centro de ayuda</a>
+                        <a class="flex items-center gap-3 px-4 py-2.5 rounded-xl cursor-pointer text-sky-100/70 hover:bg-red-500/15 hover:text-red-300 transition-colors text-sm font-medium" onclick="out()">${ic('logout')} Cerrar sesión</a>
                     </nav>
                 </div>`;
 
-            $('mn').innerHTML = `<div class="animate-fade-in">
+            const fresh = lastView !== view;
+            lastView = view; FR = fresh;
+            const hr = new Date().getHours();
+            const sal = hr < 12 ? 'Buenos días' : hr < 19 ? 'Buenas tardes' : 'Buenas noches';
+            const sub = view === 'inicio' ? `${sal}, ${me.n.split(' ')[0]}. Esto es lo que pasa hoy en la bóveda.` : { documentos: 'Busca, revisa y descarga expedientes.', carpetas: 'Expedientes agrupados por área.', prestamos: 'Seguimiento de expedientes físicos fuera del archivo.', usuarios: 'Agrega personal y decide quién ve lo restringido.', solicitudes: 'Pedidos de acceso a expedientes restringidos.', auditoria: 'Cada consulta o cambio queda registrado.', respaldos: 'Copias de seguridad del sistema.' }[view];
+            $('mn').innerHTML = `<div>
                 <!-- Mobile Header -->
-                <div class="flex items-center justify-between md:hidden mb-8">
+                <div class="flex items-center justify-between md:hidden mb-5">
                     <div class="flex items-center gap-3">
-                        <button class="text-slate-500 hover:text-brand-600 transition-colors p-1" onclick="$('sd').classList.remove('-translate-x-full'); $('sd-overlay').classList.remove('hidden');">${ic('list', 'w-6 h-6')}</button>
-                        <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">${TT[view]}</h1>
+                        <button class="w-10 h-10 rounded-xl bg-white border border-sky-100 shadow-sm text-brand-700 flex items-center justify-center active:scale-95 transition-all" aria-label="Abrir menú" onclick="$('sd').classList.remove('-translate-x-full'); $('sd-overlay').classList.remove('hidden');">${ic('list', 'w-6 h-6')}</button>
+                        <span class="font-extrabold tracking-[0.2em] text-brand-900">DAMMA</span>
                     </div>
-                    ${view === 'inicio' ? `<button class="w-8 h-8 rounded-lg bg-brand-600 text-white flex items-center justify-center hover:bg-brand-700 transition-all shadow-sm" onclick="up()">${ic('plus', 'w-4 h-4')}</button>` : (view != 'documentos' ? `<button class="w-8 h-8 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 transition-all" onclick="tt('Notificaciones simuladas', 'bell')">${ic('bell', 'w-4 h-4')}</button>` : '')}
+                    ${['inicio', 'documentos'].includes(view) ? `<button class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-600 to-sky-500 text-white flex items-center justify-center active:scale-95 transition-all shadow-md shadow-sky-500/30" aria-label="Registrar expediente" onclick="up()">${ic('plus', 'w-5 h-5')}</button>` : ''}
                 </div>
 
-                <!-- Desktop Header -->
-                <div class="hidden md:flex justify-between items-center mb-8">
-                    <div>
-                        <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">${TT[view]}</h1>
+                <!-- Banner -->
+                <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-900 via-brand-600 to-sky-400 text-white px-6 py-6 md:px-8 md:py-8 mb-8 shadow-xl shadow-brand-600/20 ${fresh ? 'animate-fade-in' : ''}">
+                    <div class="floaty absolute -top-16 -right-10 w-64 h-64 rounded-full bg-white/15 blur-2xl pointer-events-none"></div>
+                    <div class="floaty absolute -bottom-20 right-40 w-48 h-48 rounded-full bg-sky-200/25 blur-2xl pointer-events-none" style="animation-delay:-3s"></div>
+                    <div class="relative flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <div class="text-sky-100/90 text-[11px] font-bold uppercase tracking-widest mb-1">${new Date().toLocaleDateString('es-PE', { weekday: 'long', day: 'numeric', month: 'long' })}</div>
+                            <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">${TT[view]}</h1>
+                            <p class="text-sky-50/90 text-sm font-medium mt-1">${sub}</p>
+                        </div>
+                        <div class="hidden md:flex gap-3">
+                            ${view === 'inicio' ? `<button class="inline-flex items-center gap-2 whitespace-nowrap bg-white text-brand-700 font-bold py-2.5 px-5 rounded-2xl shadow-lg shadow-brand-900/20 hover:-translate-y-0.5 hover:shadow-xl active:scale-95 transition-all" onclick="up()">${ic('plus', 'w-4 h-4')} Registrar expediente</button>` : ''}
+                            ${view === 'usuarios' ? `<button class="inline-flex items-center gap-2 whitespace-nowrap bg-white text-brand-700 font-bold py-2.5 px-5 rounded-2xl shadow-lg shadow-brand-900/20 hover:-translate-y-0.5 hover:shadow-xl active:scale-95 transition-all" onclick="uForm()">${ic('user-plus', 'w-4 h-4')} Nuevo usuario</button>` : ''}
+                            <button class="w-11 h-11 rounded-2xl bg-white/15 border border-white/25 flex items-center justify-center text-white hover:bg-white/25 active:scale-95 transition-all" aria-label="Notificaciones" onclick="tt('Notificaciones simuladas', 'bell')">${ic('bell')}</button>
+                        </div>
                     </div>
-                    <div class="flex gap-3">
-                        ${view === 'inicio' ? `<button class="${btnCls} !py-2.5 !px-5" onclick="up()">${ic('plus', 'w-4 h-4')} Registrar expediente</button>` : ''}
-                        ${view != 'inicio' && view != 'documentos' ? `<button class="w-11 h-11 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:border-brand-200 transition-all shadow-sm" onclick="tt('Notificaciones simuladas', 'bell')">${ic('bell')}</button>` : ''}
-                    </div>
-                </div>` + V[view]() + `
-                </div></div>`;
+                </div>
+                <div class="${fresh ? 'stg' : ''}">` + V[view]() + `</div>
+                </div>`;
+            if (fresh) countUp();
+            save();
+        };
+
+        const countUp = () => {
+            document.querySelectorAll('[data-cu]').forEach(el => {
+                const to = +el.dataset.cu, t0 = performance.now(), dur = 900;
+                if (matchMedia('(prefers-reduced-motion: reduce)').matches) { el.textContent = to; return; }
+                const step = t => { const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = Math.round(to * e); if (p < 1) requestAnimationFrame(step); };
+                el.textContent = 0;
+                requestAnimationFrame(step);
+            });
         };
 
         const act = l => `
@@ -369,13 +513,13 @@
         const bus = () => { S.q = $('q').value.trim(); go('documentos'); };
         const flt = () => D.filter(d => (!S.q || (d.n + d.c).toLowerCase().includes(S.q.toLowerCase())) && (!S.c || d.f == S.c) && (!S.k || d.k == S.k) && (!S.e || d.e == S.e) && (!S.g || d.g <= +S.g));
 
-        const pillCls = { pdf: 'bg-red-500 shadow-red-500/20', docx: 'bg-blue-600 shadow-blue-600/20', xlsx: 'bg-emerald-600 shadow-emerald-600/20' };
+        const pillCls = { pdf: 'bg-red-500 shadow-red-500/20', docx: 'bg-blue-600 shadow-blue-600/20', xlsx: 'bg-emerald-600 shadow-emerald-600/20', jpg: 'bg-sky-500 shadow-sky-500/20', png: 'bg-sky-500 shadow-sky-500/20' };
 
         const tb = l => l.length ? `
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="border-b border-slate-200 bg-slate-50/50">
+                        <tr class="border-b border-sky-100 bg-gradient-to-r from-sky-50 to-white">
                             <th class="px-5 py-4 text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Documento</th>
                             <th class="px-5 py-4 text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Carpeta</th>
                             <th class="px-5 py-4 text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Fecha</th>
@@ -391,6 +535,7 @@
                                     <div class="font-bold text-sm text-slate-800 group-hover:text-brand-600 transition-colors flex items-center gap-2">
                                         ${d.n}
                                         ${!can(d) ? ic('lock', 'w-3.5 h-3.5 text-slate-400') : ''}
+                                        ${d.fl ? `<span title="Tiene archivo digital">${ic('paperclip', 'w-3.5 h-3.5 text-brand-500')}</span>` : ''}
                                     </div>
                                     <div class="text-xs text-slate-500 font-medium mt-1.5 flex items-center gap-2">
                                         <span class="font-mono text-[10px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded tracking-wide">${d.c}</span>
@@ -449,18 +594,19 @@
             </div>`;
         };
 
-        const stat = (i, l, v, bg, txt, f) => `
-            <div class="bg-white border border-slate-200 rounded-3xl p-6 flex items-center gap-5 cursor-pointer hover:border-brand-400 hover:shadow-xl hover:shadow-brand-500/10 hover:-translate-y-1 transition-all group" onclick="${f}">
-                <div class="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 ${bg} ${txt} transition-transform group-hover:scale-110 group-hover:rotate-3 ring-1 ring-slate-900/5">${ic(i, 'w-8 h-8')}</div>
-                <div>
-                    <div class="text-sm text-slate-500 font-bold uppercase tracking-wider mb-1">${l}</div>
-                    <div class="text-4xl font-black text-slate-800 leading-none tracking-tight">${v}</div>
+        const stat = (i, l, v, grad, f) => `
+            <div class="relative overflow-hidden bg-white border border-sky-100 rounded-3xl p-6 flex items-center gap-5 cursor-pointer hover:border-brand-300 hover:shadow-xl hover:shadow-brand-500/15 hover:-translate-y-1 active:scale-[0.99] transition-all duration-300 group" onclick="${f}">
+                <div class="absolute -right-6 -bottom-8 w-28 h-28 rounded-full bg-gradient-to-br ${grad} opacity-10 group-hover:opacity-20 group-hover:scale-125 transition-all duration-500"></div>
+                <div class="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 bg-gradient-to-br ${grad} text-white shadow-lg shadow-sky-500/25 transition-transform group-hover:scale-110 group-hover:-rotate-6">${ic(i, 'w-8 h-8')}</div>
+                <div class="relative min-w-0">
+                    <div class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1 truncate">${l}</div>
+                    <div class="text-4xl font-black text-brand-950 leading-none tracking-tight" data-cu="${v}">${v}</div>
                 </div>
             </div>`;
 
         const chart = () => {
             const vals = [12, 19, 15, 25, 22, 8, 30], days = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
-            return `<div class="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm">
+            return `<div class="bg-white/90 backdrop-blur border border-sky-100 rounded-3xl p-6 md:p-8 shadow-sm shadow-sky-900/5">
                 <div class="flex justify-between items-end mb-8">
                     <div>
                         <h3 class="text-lg font-extrabold text-slate-800 flex items-center gap-2.5 mb-1">${ic('chart-bar', 'w-5 h-5 text-brand-500')} Ingresos recientes</h3>
@@ -475,8 +621,8 @@
                     ${vals.map((v, i) => `
                     <div class="flex flex-col items-center flex-1 gap-3 group cursor-pointer h-full">
                         <div class="w-full max-w-[2.5rem] relative flex-1 flex items-end justify-center">
-                            <div class="w-full bg-brand-100 rounded-t-md relative transition-all duration-300 group-hover:bg-brand-200" style="height: ${(v / 30) * 100}%">
-                                <div class="absolute bottom-0 left-0 right-0 rounded-t-md bg-gradient-to-t from-brand-600 to-brand-400 transition-all duration-300 group-hover:from-brand-500 group-hover:to-brand-300" style="height: 100%"></div>
+                            <div class="w-full rounded-t-lg relative ${FR ? 'bar-up' : ''}" style="height: ${(v / 30) * 100}%; animation-delay: ${i * 60}ms">
+                                <div class="absolute bottom-0 left-0 right-0 rounded-t-lg bg-gradient-to-t from-brand-600 to-sky-400 transition-all duration-300 group-hover:from-brand-500 group-hover:to-sky-300 group-hover:shadow-lg group-hover:shadow-sky-400/40" style="height: 100%"></div>
                                 <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 shadow-lg">${v}</div>
                             </div>
                         </div>
@@ -493,7 +639,7 @@
             const arch = D.filter(d => d.e == 'Archivado').length;
             const ingr = D.filter(d => d.e == 'Ingresado').length;
             const w = v => Math.round((v / tot) * 100);
-            return `<div class="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm">
+            return `<div class="bg-white/90 backdrop-blur border border-sky-100 rounded-3xl p-6 md:p-8 shadow-sm shadow-sky-900/5">
                 <h3 class="text-lg font-extrabold text-slate-800 flex items-center gap-2.5 mb-6">${ic('chart-pie', 'w-5 h-5 text-brand-500')} Estado de la Bóveda</h3>
                 <div class="flex h-3.5 rounded-full overflow-hidden mb-8 bg-slate-100 ring-1 ring-slate-900/5">
                     <div class="bg-emerald-500 hover:opacity-80 transition-opacity cursor-pointer" style="width: ${w(disp)}%" title="Disponibles: ${disp}"></div>
@@ -515,7 +661,7 @@
             const old = P.filter(p => p.st == 'Prestado' && (Date.now() - p.ts_loan > p.days * 864e5)).length;
             const reqs = pend();
 
-            return `<div class="bg-gradient-to-br from-amber-50 to-orange-50/50 border border-amber-200/60 rounded-3xl p-6 md:p-8 shadow-sm mt-8">
+            return `<div class="bg-gradient-to-br from-amber-50 to-orange-50/50 border border-amber-200/60 rounded-3xl p-6 md:p-8 shadow-sm shadow-sky-900/5 mt-8">
                 <h3 class="text-lg font-extrabold text-amber-900 flex items-center gap-2.5 mb-5">${ic('warning-circle', 'w-5 h-5 text-amber-500')} Alertas</h3>
                 <div class="flex flex-col gap-3">
                     ${old > 0 ? `<div class="bg-white/80 p-4 rounded-2xl flex items-start gap-3.5 border border-amber-200/50 shadow-sm">
@@ -539,21 +685,21 @@
         V.inicio = () => `
             ${sb()}
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                ${stat('file', 'Documentos', D.length, 'bg-blue-50', 'text-blue-600', "go('documentos','')")}
-                ${stat('folder', 'Carpetas', F.length, 'bg-emerald-50', 'text-emerald-600', "go('carpetas')")}
-                ${stat('users', 'Usuarios', U.length, 'bg-purple-50', 'text-purple-600', "me.a?go('usuarios'):tt('Solo el administrador', 'lock')")}
+                ${stat('file', 'Documentos', D.length, 'from-brand-600 to-sky-400', "go('documentos','')")}
+                ${stat('folder', 'Carpetas', F.length, 'from-sky-500 to-cyan-300', "go('carpetas')")}
+                ${stat('users', 'Usuarios', active().length, 'from-brand-800 to-brand-500', "me.a?go('usuarios'):tt('Solo el administrador', 'lock')")}
             </div>
             <div class="grid grid-cols-1 xl:grid-cols-[1fr_420px] gap-8 items-start">
                 <div class="flex flex-col gap-8">
                     ${chart()}
-                    <div class="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm">
+                    <div class="bg-white/90 backdrop-blur border border-sky-100 rounded-3xl p-6 md:p-8 shadow-sm shadow-sky-900/5">
                         <div class="flex justify-between items-center mb-6">
                             <h3 class="text-lg font-extrabold text-slate-800 flex items-center gap-2.5">${ic('folder', 'w-5 h-5 text-brand-500')} Carpetas de trabajo</h3>
                             <button class="text-sm font-bold text-brand-600 hover:text-brand-800 transition-colors" onclick="go('carpetas')">Ver todas</button>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">${F.slice(0, 3).map(fc).join('')}</div>
                     </div>
-                    <div class="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm">
+                    <div class="bg-white/90 backdrop-blur border border-sky-100 rounded-3xl p-6 md:p-8 shadow-sm shadow-sky-900/5">
                         <div class="flex justify-between items-center mb-6">
                             <h3 class="text-lg font-extrabold text-slate-800 flex items-center gap-2.5">${ic('file', 'w-5 h-5 text-brand-500')} Documentos recientes</h3>
                             <button class="text-sm font-bold text-brand-600 hover:text-brand-800 transition-colors" onclick="go('documentos')">Explorar</button>
@@ -562,7 +708,7 @@
                     </div>
                 </div>
                 <div class="flex flex-col gap-8">
-                    <div class="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm">
+                    <div class="bg-white/90 backdrop-blur border border-sky-100 rounded-3xl p-6 md:p-8 shadow-sm shadow-sky-900/5">
                         <div class="flex justify-between items-center mb-6">
                             <h3 class="text-lg font-extrabold text-slate-800 flex items-center gap-2.5">${ic('shield', 'w-5 h-5 text-brand-500')} Actividad reciente</h3>
                         </div>
@@ -574,23 +720,44 @@
                 </div>
             </div>`;
 
-        V.documentos = () => { const l = flt(); return `${sb()}<div class="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden"><div class="p-6 border-b border-slate-200 flex justify-between items-center bg-slate-50/50"><h3 class="text-lg font-extrabold text-slate-800 flex items-center gap-3"><span class="bg-brand-100 text-brand-700 px-2.5 py-1 rounded-lg text-sm">${l.length}</span> documentos</h3><button class="${btnCls}" onclick="up()">${ic('plus', 'w-4 h-4')} Registrar</button></div><div class="p-6">${tb(l)}</div></div>`; };
+        V.documentos = () => { const l = flt(); return `${sb()}<div class="bg-white/90 backdrop-blur border border-sky-100 rounded-3xl shadow-sm overflow-hidden"><div class="p-6 border-b border-sky-100 flex justify-between items-center bg-gradient-to-r from-sky-50 to-white"><h3 class="text-lg font-extrabold text-slate-800 flex items-center gap-3"><span class="bg-brand-100 text-brand-700 px-2.5 py-1 rounded-lg text-sm">${l.length}</span> documentos</h3><button class="${btnCls}" onclick="up()">${ic('plus', 'w-4 h-4')} Registrar</button></div><div class="p-6">${tb(l)}</div></div>`; };
 
-        V.carpetas = () => `<div class="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm"><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">${F.map(fc).join('')}</div></div>`;
+        V.carpetas = () => `<div class="bg-white/90 backdrop-blur border border-sky-100 rounded-3xl p-6 md:p-8 shadow-sm shadow-sky-900/5"><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">${F.map(fc).join('')}</div></div>`;
 
-        V.usuarios = () => `<div class="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden"><div class="p-6 border-b border-slate-200 bg-slate-50/50"><h3 class="text-lg font-extrabold text-slate-800">Control de Usuarios</h3><p class="text-sm text-slate-500 font-medium mt-1">Administra quién tiene acceso a los expedientes restringidos.</p></div><div class="overflow-x-auto p-6"><table class="w-full text-left border-collapse rounded-xl ring-1 ring-slate-200 overflow-hidden"><thead><tr class="bg-slate-50 border-b border-slate-200"><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Usuario</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Rol</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Ver expedientes restringidos</th></tr></thead><tbody class="divide-y divide-slate-100">${U.map((u, i) => `<tr class="hover:bg-slate-50 transition-colors"><td class="px-5 py-4"><div class="flex items-center gap-4">${av(u.n)}<div class="leading-tight"><div class="font-bold text-sm text-slate-800">${u.n}</div><div class="text-xs text-slate-500 font-medium mt-1">${u.r}</div></div></div></td><td class="px-5 py-4"><span class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap ${u.a ? 'bg-brand-100 text-brand-700 ring-1 ring-brand-700/10' : 'bg-slate-100 text-slate-600 ring-1 ring-slate-500/10'}">${u.a ? 'Administrador' : 'Usuario'}</span></td><td class="px-5 py-4 text-center"><input type="checkbox" class="sw mx-auto" ${u.s ? 'checked' : ''} ${u.a ? 'disabled' : ''} onchange="pm(${i},this.checked)"></td></tr>`).join('')}</tbody></table></div></div>`;
+        V.usuarios = () => {
+            const badge = u => `<span class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap ${u.a ? 'bg-brand-100 text-brand-700 ring-1 ring-brand-700/10' : 'bg-slate-100 text-slate-600 ring-1 ring-slate-500/10'}">${u.a ? 'Administrador' : 'Usuario'}</span>${u.x ? ' <span class="px-2 py-1 rounded-lg text-[10px] font-bold uppercase bg-red-50 text-red-600 ring-1 ring-red-600/20">Inactivo</span>' : ''}`;
+            const sw = (u, i) => `<input type="checkbox" class="sw" aria-label="Ver restringidos: ${u.n}" ${u.s ? 'checked' : ''} ${u.a || u.x ? 'disabled' : ''} onchange="pm(${i},this.checked)">`;
+            const acts = (u, i) => `<div class="flex items-center justify-end gap-1">
+                <button class="p-2 text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-all" title="Editar" aria-label="Editar ${u.n}" onclick="uForm(${i})">${ic('pencil-simple', 'w-4 h-4')}</button>
+                <button class="p-2 rounded-lg transition-all ${u.x ? 'text-emerald-500 hover:bg-emerald-50' : 'text-slate-400 hover:text-red-600 hover:bg-red-50'}" title="${u.x ? 'Reactivar' : 'Desactivar'}" aria-label="${u.x ? 'Reactivar' : 'Desactivar'} ${u.n}" onclick="uTog(${i})">${ic(u.x ? 'user-check' : 'user-minus', 'w-4 h-4')}</button>
+            </div>`;
+            return `<div class="bg-white/90 backdrop-blur border border-sky-100 rounded-3xl shadow-sm overflow-hidden">
+                <div class="p-6 border-b border-sky-100 bg-gradient-to-r from-sky-50 to-white flex flex-wrap gap-4 justify-between items-center">
+                    <div><h3 class="text-lg font-extrabold text-slate-800">Control de usuarios</h3><p class="text-sm text-slate-500 font-medium mt-1">${active().length} activos · Agrega personal y decide quién ve los expedientes restringidos.</p></div>
+                    <button class="${btnCls}" onclick="uForm()">${ic('user-plus', 'w-4 h-4')} Nuevo usuario</button>
+                </div>
+                <div class="hidden md:block overflow-x-auto p-6"><table class="w-full text-left border-collapse rounded-xl ring-1 ring-sky-100 overflow-hidden">
+                    <thead><tr class="bg-sky-50/60 border-b border-sky-100"><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Usuario</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Rol</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Ver restringidos</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Acciones</th></tr></thead>
+                    <tbody class="divide-y divide-slate-100">${U.map((u, i) => `<tr class="hover:bg-sky-50/50 transition-colors ${u.x ? 'opacity-60' : ''}"><td class="px-5 py-4"><div class="flex items-center gap-4">${av(u.n)}<div class="leading-tight"><div class="font-bold text-sm text-slate-800">${u.n}${u === me ? ' <span class="text-[10px] font-bold text-brand-600">(tú)</span>' : ''}</div><div class="text-xs text-slate-500 font-medium mt-1">${u.r}</div></div></div></td><td class="px-5 py-4">${badge(u)}</td><td class="px-5 py-4 text-center"><div class="flex justify-center">${sw(u, i)}</div></td><td class="px-5 py-4">${acts(u, i)}</td></tr>`).join('')}</tbody>
+                </table></div>
+                <div class="md:hidden p-4 flex flex-col gap-3">${U.map((u, i) => `<div class="p-4 rounded-2xl border border-sky-100 bg-white ${u.x ? 'opacity-60' : ''}">
+                    <div class="flex items-center gap-3">${av(u.n)}<div class="flex-1 min-w-0 leading-tight"><div class="font-bold text-sm text-slate-800 truncate">${u.n}${u === me ? ' <span class="text-[10px] font-bold text-brand-600">(tú)</span>' : ''}</div><div class="text-xs text-slate-500 font-medium mt-1 truncate">${u.r}</div></div>${acts(u, i)}</div>
+                    <div class="flex items-center justify-between gap-3 mt-4 pt-3 border-t border-slate-100"><div class="flex flex-wrap gap-1.5">${badge(u)}</div><label class="flex items-center gap-2 text-xs font-bold text-slate-600">Restringidos ${sw(u, i)}</label></div>
+                </div>`).join('')}</div>
+            </div>`;
+        };
 
         V.prestamos = () => {
             let list = isCust() ? P : P.filter(x => x.u == me.n);
             if (S.p) list = list.filter(p => p.st == S.p);
-            return `<div class="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden"><div class="p-6 border-b border-slate-200 bg-slate-50/50 flex flex-wrap gap-4 justify-between items-center"><h3 class="text-lg font-extrabold text-slate-800">${isCust() ? 'Control de Préstamos' : 'Mis Préstamos'}</h3><select class="${inputCls} max-w-xs bg-white text-sm py-2" onchange="S.p=this.value; render()"><option value="">Todos los estados</option><option value="Solicitado" ${S.p=='Solicitado'?'selected':''}>Solicitados</option><option value="Prestado" ${S.p=='Prestado'?'selected':''}>Prestados</option><option value="Por validar" ${S.p=='Por validar'?'selected':''}>Por validar</option></select></div><div class="p-6">${list.length ? `<div class="overflow-x-auto rounded-xl ring-1 ring-slate-200"><table class="w-full text-left border-collapse"><thead><tr class="bg-slate-50 border-b border-slate-200"><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Expediente</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Usuario</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Estado / Vencimiento</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Acciones</th></tr></thead><tbody class="divide-y divide-slate-100">${list.map(p => { const d = D.find(x => x.id == p.doc); const exp = p.ts_loan + p.days * 864e5; const over = p.st == 'Prestado' && Date.now() > exp; return `<tr class="hover:bg-slate-50 cursor-pointer ${over ? 'bg-red-50/30' : ''}" onclick="ver(${p.doc})"><td class="px-5 py-4 font-bold text-sm ${over ? 'text-red-700' : ''}">${d.c}</td><td class="px-5 py-4 text-sm">${p.u == me.n ? 'Tú' : p.u}</td><td class="px-5 py-4"><span class="px-2 py-1 rounded text-[11px] font-bold ${p.st=='Prestado' ? (over ? 'bg-red-100 text-red-800 ring-1 ring-red-700/10' : 'bg-amber-100 text-amber-800') : p.st=='Por validar' ? 'bg-blue-100 text-blue-800' : p.st=='Solicitado' ? 'bg-slate-100 text-slate-800' : p.st=='Rechazado' ? 'bg-red-100 text-red-800' : 'bg-emerald-100 text-emerald-800'}">${p.st}</span>${p.st == 'Prestado' ? `<div class="text-[10px] ${over ? 'text-red-600 font-extrabold' : 'text-slate-500 font-bold'} mt-1 uppercase">${over ? ic('warning-circle','w-3 h-3') + ' Venció: ' : 'Vence: '}${new Date(exp).toLocaleDateString('es-PE')}</div>` : ''}</td><td class="px-5 py-4 text-right">${p.st == 'Solicitado' && isCust() ? `<button class="bg-emerald-50 text-emerald-700 font-bold px-3 py-1 rounded-lg text-xs mr-2 ring-1 ring-emerald-600/20" onclick="event.stopPropagation(); apLoan(${p.id},1)">Aprobar</button><button class="bg-red-50 text-red-700 font-bold px-3 py-1 rounded-lg text-xs ring-1 ring-red-600/20" onclick="event.stopPropagation(); apLoan(${p.id},0)">Rechazar</button>` : ''} ${p.st == 'Prestado' && p.u == me.n ? `<button class="bg-brand-100 text-brand-700 px-3 py-1.5 rounded-lg font-bold text-xs" onclick="event.stopPropagation(); retLoan(${p.id})">Declarar devolución</button>` : ''} ${p.st == 'Por validar' && isCust() ? `<button class="bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-lg font-bold text-xs" onclick="event.stopPropagation(); valLoan(${p.id})">Validar recepción</button>` : ''} ${p.st == 'Prestado' && isCust() ? `<button class="text-slate-500 font-bold text-xs hover:text-brand-600" onclick="event.stopPropagation(); valLoan(${p.id})">Recibir directo</button>` : ''}</td></tr>`; }).join('')}</tbody></table></div>` : '<div class="p-10 text-center text-slate-500">No hay préstamos con este filtro.</div>'}</div></div>`;
+            return `<div class="bg-white/90 backdrop-blur border border-sky-100 rounded-3xl shadow-sm overflow-hidden"><div class="p-6 border-b border-sky-100 bg-gradient-to-r from-sky-50 to-white flex flex-wrap gap-4 justify-between items-center"><h3 class="text-lg font-extrabold text-slate-800">${isCust() ? 'Control de Préstamos' : 'Mis Préstamos'}</h3><select class="${inputCls} max-w-xs bg-white text-sm py-2" onchange="S.p=this.value; render()"><option value="">Todos los estados</option><option value="Solicitado" ${S.p=='Solicitado'?'selected':''}>Solicitados</option><option value="Prestado" ${S.p=='Prestado'?'selected':''}>Prestados</option><option value="Por validar" ${S.p=='Por validar'?'selected':''}>Por validar</option></select></div><div class="p-6">${list.length ? `<div class="overflow-x-auto rounded-xl ring-1 ring-slate-200"><table class="w-full text-left border-collapse"><thead><tr class="bg-slate-50 border-b border-slate-200"><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Expediente</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Usuario</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Estado / Vencimiento</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Acciones</th></tr></thead><tbody class="divide-y divide-slate-100">${list.map(p => { const d = D.find(x => x.id == p.doc); const exp = p.ts_loan + p.days * 864e5; const over = p.st == 'Prestado' && Date.now() > exp; return `<tr class="hover:bg-slate-50 cursor-pointer ${over ? 'bg-red-50/30' : ''}" onclick="ver(${p.doc})"><td class="px-5 py-4 font-bold text-sm ${over ? 'text-red-700' : ''}">${d.c}</td><td class="px-5 py-4 text-sm">${p.u == me.n ? 'Tú' : p.u}</td><td class="px-5 py-4"><span class="px-2 py-1 rounded text-[11px] font-bold ${p.st=='Prestado' ? (over ? 'bg-red-100 text-red-800 ring-1 ring-red-700/10' : 'bg-amber-100 text-amber-800') : p.st=='Por validar' ? 'bg-blue-100 text-blue-800' : p.st=='Solicitado' ? 'bg-slate-100 text-slate-800' : p.st=='Rechazado' ? 'bg-red-100 text-red-800' : 'bg-emerald-100 text-emerald-800'}">${p.st}</span>${p.st == 'Prestado' ? `<div class="text-[10px] ${over ? 'text-red-600 font-extrabold' : 'text-slate-500 font-bold'} mt-1 uppercase">${over ? ic('warning-circle','w-3 h-3') + ' Venció: ' : 'Vence: '}${new Date(exp).toLocaleDateString('es-PE')}</div>` : ''}</td><td class="px-5 py-4 text-right">${p.st == 'Solicitado' && isCust() ? `<button class="bg-emerald-50 text-emerald-700 font-bold px-3 py-1 rounded-lg text-xs mr-2 ring-1 ring-emerald-600/20" onclick="event.stopPropagation(); apLoan(${p.id},1)">Aprobar</button><button class="bg-red-50 text-red-700 font-bold px-3 py-1 rounded-lg text-xs ring-1 ring-red-600/20" onclick="event.stopPropagation(); apLoan(${p.id},0)">Rechazar</button>` : ''} ${p.st == 'Prestado' && p.u == me.n ? `<button class="bg-brand-100 text-brand-700 px-3 py-1.5 rounded-lg font-bold text-xs" onclick="event.stopPropagation(); retLoan(${p.id})">Declarar devolución</button>` : ''} ${p.st == 'Por validar' && isCust() ? `<button class="bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-lg font-bold text-xs" onclick="event.stopPropagation(); valLoan(${p.id})">Validar recepción</button>` : ''} ${p.st == 'Prestado' && isCust() ? `<button class="text-slate-500 font-bold text-xs hover:text-brand-600" onclick="event.stopPropagation(); valLoan(${p.id})">Recibir directo</button>` : ''}</td></tr>`; }).join('')}</tbody></table></div>` : '<div class="p-10 text-center text-slate-500">No hay préstamos con este filtro.</div>'}</div></div>`;
         };
 
-        V.solicitudes = () => `<div class="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden"><div class="p-6 border-b border-slate-200 bg-slate-50/50"><h3 class="text-lg font-extrabold text-slate-800">Solicitudes de acceso</h3></div><div class="p-6">${Q.length ? `<div class="overflow-x-auto rounded-xl ring-1 ring-slate-200"><table class="w-full text-left border-collapse"><thead><tr class="bg-slate-50 border-b border-slate-200"><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Expediente</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Solicitante</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Fecha</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Estado</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Acciones</th></tr></thead><tbody class="divide-y divide-slate-100">${Q.map(q => { const d = D.find(x => x.id == q.doc); return `<tr class="hover:bg-slate-50 transition-colors cursor-pointer" onclick="ver(${q.doc})"><td class="px-5 py-4 leading-tight"><div class="font-bold text-sm text-slate-800">${d.c}</div><div class="text-xs text-slate-500 font-medium mt-1">${d.n}</div></td><td class="px-5 py-4 text-sm text-slate-700 font-bold">${q.u}</td><td class="px-5 py-4 text-sm text-slate-500 font-medium">${ago(q.ts)}</td><td class="px-5 py-4"><span class="px-3 py-1.5 rounded-lg text-[11px] font-bold whitespace-nowrap ${q.st == 'Pendiente' ? 'bg-amber-100 text-amber-800 ring-1 ring-amber-700/10' : q.st == 'Aprobada' ? 'bg-emerald-100 text-emerald-800 ring-1 ring-emerald-700/10' : 'bg-red-100 text-red-800 ring-1 ring-red-700/10'}">${q.st}</span></td><td class="px-5 py-4 text-right whitespace-nowrap">${q.st == 'Pendiente' ? `<button class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs px-4 py-2 rounded-xl mr-2 transition-colors ring-1 ring-emerald-600/20" onclick="event.stopPropagation(); res(${q.id},1)">Aprobar</button><button class="bg-red-50 hover:bg-red-100 text-red-700 font-bold text-xs px-4 py-2 rounded-xl transition-colors ring-1 ring-red-600/20" onclick="event.stopPropagation(); res(${q.id},0)">Rechazar</button>` : ''}</td></tr>`; }).join('')}</tbody></table></div>` : '<div class="p-16 text-center text-slate-500"><div class="mx-auto w-16 h-16 mb-4 text-emerald-500 bg-emerald-50 rounded-full flex items-center justify-center shadow-sm">' + ic('check', 'w-8 h-8') + '</div><h4 class="text-lg font-bold text-slate-700">Todo al día</h4><p class="text-sm mt-1">No hay solicitudes pendientes por revisar.</p></div>'}</div></div>`;
+        V.solicitudes = () => `<div class="bg-white/90 backdrop-blur border border-sky-100 rounded-3xl shadow-sm overflow-hidden"><div class="p-6 border-b border-sky-100 bg-gradient-to-r from-sky-50 to-white"><h3 class="text-lg font-extrabold text-slate-800">Solicitudes de acceso</h3></div><div class="p-6">${Q.length ? `<div class="overflow-x-auto rounded-xl ring-1 ring-slate-200"><table class="w-full text-left border-collapse"><thead><tr class="bg-slate-50 border-b border-slate-200"><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Expediente</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Solicitante</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Fecha</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Estado</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Acciones</th></tr></thead><tbody class="divide-y divide-slate-100">${Q.map(q => { const d = D.find(x => x.id == q.doc); return `<tr class="hover:bg-slate-50 transition-colors cursor-pointer" onclick="ver(${q.doc})"><td class="px-5 py-4 leading-tight"><div class="font-bold text-sm text-slate-800">${d.c}</div><div class="text-xs text-slate-500 font-medium mt-1">${d.n}</div></td><td class="px-5 py-4 text-sm text-slate-700 font-bold">${q.u}</td><td class="px-5 py-4 text-sm text-slate-500 font-medium">${ago(q.ts)}</td><td class="px-5 py-4"><span class="px-3 py-1.5 rounded-lg text-[11px] font-bold whitespace-nowrap ${q.st == 'Pendiente' ? 'bg-amber-100 text-amber-800 ring-1 ring-amber-700/10' : q.st == 'Aprobada' ? 'bg-emerald-100 text-emerald-800 ring-1 ring-emerald-700/10' : 'bg-red-100 text-red-800 ring-1 ring-red-700/10'}">${q.st}</span></td><td class="px-5 py-4 text-right whitespace-nowrap">${q.st == 'Pendiente' ? `<button class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs px-4 py-2 rounded-xl mr-2 transition-colors ring-1 ring-emerald-600/20" onclick="event.stopPropagation(); res(${q.id},1)">Aprobar</button><button class="bg-red-50 hover:bg-red-100 text-red-700 font-bold text-xs px-4 py-2 rounded-xl transition-colors ring-1 ring-red-600/20" onclick="event.stopPropagation(); res(${q.id},0)">Rechazar</button>` : ''}</td></tr>`; }).join('')}</tbody></table></div>` : '<div class="p-16 text-center text-slate-500"><div class="mx-auto w-16 h-16 mb-4 text-emerald-500 bg-emerald-50 rounded-full flex items-center justify-center shadow-sm">' + ic('check', 'w-8 h-8') + '</div><h4 class="text-lg font-bold text-slate-700">Todo al día</h4><p class="text-sm mt-1">No hay solicitudes pendientes por revisar.</p></div>'}</div></div>`;
 
-        V.auditoria = () => `<div class="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden"><div class="p-6 border-b border-slate-200 bg-slate-50/50"><h3 class="text-lg font-extrabold text-slate-800">Registro de Auditoría</h3><p class="text-sm text-slate-500 font-medium mt-1">Cada consulta o cambio queda registrado permanentemente.</p></div><div class="p-6">${L.map(act).join('')}</div></div>`;
+        V.auditoria = () => `<div class="bg-white/90 backdrop-blur border border-sky-100 rounded-3xl shadow-sm overflow-hidden"><div class="p-6 border-b border-sky-100 bg-gradient-to-r from-sky-50 to-white"><h3 class="text-lg font-extrabold text-slate-800">Registro de Auditoría</h3><p class="text-sm text-slate-500 font-medium mt-1">Cada consulta o cambio queda registrado permanentemente.</p></div><div class="p-6">${L.map(act).join('')}</div></div>`;
 
-        V.respaldos = () => `<div class="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden"><div class="p-6 border-b border-slate-200 flex justify-between items-center bg-slate-50/50"><h3 class="text-lg font-extrabold text-slate-800">Copias de seguridad</h3><button class="${btnCls}" onclick="bk()">${ic('archive', 'w-4 h-4')} Crear respaldo</button></div><div class="overflow-x-auto p-6"><table class="w-full text-left border-collapse rounded-xl ring-1 ring-slate-200 overflow-hidden"><thead><tr class="bg-slate-50 border-b border-slate-200"><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Fecha</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Tamaño</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Estado</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Acciones</th></tr></thead><tbody class="divide-y divide-slate-100">${B.map(b => `<tr class="hover:bg-slate-50 transition-colors"><td class="px-5 py-4 text-sm font-bold text-slate-700">${new Date(b.ts).toLocaleString('es-PE')}</td><td class="px-5 py-4 text-sm text-slate-600 font-medium">${b.s}</td><td class="px-5 py-4"><span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20">${ic('check', 'w-3.5 h-3.5')}Verificado</span></td><td class="px-5 py-4 text-right"><button class="text-sm font-bold text-brand-600 hover:text-brand-800 hover:bg-brand-50 px-4 py-2 rounded-xl transition-colors" onclick="tt('Restauración simulada', 'check')">Restaurar</button></td></tr>`).join('')}</tbody></table></div></div>`;
+        V.respaldos = () => `<div class="bg-white/90 backdrop-blur border border-sky-100 rounded-3xl shadow-sm overflow-hidden"><div class="p-6 border-b border-sky-100 flex flex-wrap gap-3 justify-between items-center bg-gradient-to-r from-sky-50 to-white"><h3 class="text-lg font-extrabold text-slate-800">Copias de seguridad</h3><div class="flex flex-wrap gap-2"><button class="${btnGhostCls}" onclick="resetDemo()" title="Borra lo agregado y vuelve a los datos de ejemplo">${ic('arrow-counter-clockwise', 'w-4 h-4')} Restablecer demo</button><button class="${btnCls}" onclick="bk()">${ic('archive', 'w-4 h-4')} Crear respaldo</button></div></div><div class="overflow-x-auto p-6"><table class="w-full text-left border-collapse rounded-xl ring-1 ring-slate-200 overflow-hidden"><thead><tr class="bg-slate-50 border-b border-slate-200"><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Fecha</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Tamaño</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Estado</th><th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Acciones</th></tr></thead><tbody class="divide-y divide-slate-100">${B.map(b => `<tr class="hover:bg-slate-50 transition-colors"><td class="px-5 py-4 text-sm font-bold text-slate-700">${new Date(b.ts).toLocaleString('es-PE')}</td><td class="px-5 py-4 text-sm text-slate-600 font-medium">${b.s}</td><td class="px-5 py-4"><span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20">${ic('check', 'w-3.5 h-3.5')}Verificado</span></td><td class="px-5 py-4 text-right"><button class="text-sm font-bold text-brand-600 hover:text-brand-800 hover:bg-brand-50 px-4 py-2 rounded-xl transition-colors" onclick="tt('Restauración simulada', 'check')">Restaurar</button></td></tr>`).join('')}</tbody></table></div></div>`;
 
         const ver = (id, q) => {
             const d = D.find(x => x.id == id);
@@ -638,11 +805,12 @@
                     <div><span class="block text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1.5">Estado actual</span><span class="inline-block px-3 py-1 rounded-lg text-[11px] font-bold ${ST[d.e] || 'bg-slate-100'}">${d.e}</span></div>
                     <div><span class="block text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1.5">Nivel de Acceso</span><span class="inline-flex px-3 py-1 rounded-lg items-center gap-1.5 text-[11px] font-bold ${d.rs ? 'bg-red-50 text-red-700 ring-1 ring-red-600/20' : 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20'}">${d.rs ? ic('lock', 'w-3.5 h-3.5') + 'Restringido' : ic('check', 'w-3.5 h-3.5') + 'General'}</span></div>
                 </div>
+                ${can(d) ? pv(d, cust) : ''}
                 ${pr ? `<div class="flex items-center gap-4 bg-amber-50 border border-amber-200 text-amber-800 p-5 rounded-2xl mb-8 text-sm shadow-sm"><div class="w-10 h-10 bg-amber-200/50 rounded-xl flex items-center justify-center shrink-0 text-amber-700">${ic('swap', 'w-5 h-5')}</div><div class="leading-tight">Expediente prestado a <b class="font-extrabold">${pr.u}</b><div class="text-xs text-amber-700/80 mt-1 font-medium">Vence: ${new Date(pr.ts_loan + pr.days * 864e5).toLocaleDateString('es-PE')} &bull; Plazo: ${pr.days} días${pr.m ? ' &bull; ' + pr.m : ''}</div></div></div>` : ''}
                 
                 <div class="flex flex-wrap gap-3 mb-8 items-center">
                     ${d.e == 'Ingresado' ? (cust ? `<button class="${btnCls}" onclick="st(${id},'verify')">${ic('check', 'w-4 h-4')} Validar Recepción</button>` : '') : ''}
-                    ${d.e == 'Disponible' ? `<button class="${btnCls} bg-amber-500 hover:bg-amber-600 shadow-amber-500/20" onclick="solicLoan(${id})">${ic('swap', 'w-4 h-4')} Solicitar Préstamo</button>` : ''}
+                    ${d.e == 'Disponible' ? `<button class="inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2.5 px-5 rounded-2xl shadow-sm shadow-amber-500/20 hover:-translate-y-0.5 active:scale-95 transition-all" onclick="solicLoan(${id})">${ic('swap', 'w-4 h-4')} Solicitar Préstamo</button>` : ''}
                     ${cust && d.e == 'Disponible' ? `<button class="${btnGhostCls} border border-slate-200" onclick="st(${id},'close')">${ic('archive', 'w-4 h-4')} Archivar expediente</button>` : ''}
                     ${cust && d.e == 'Archivado' ? `<button class="${btnGhostCls} border border-slate-200" onclick="st(${id},'open')">Reabrir expediente</button>` : ''}
                     ${cust && d.e == 'Prestado' ? `<button class="${btnGhostCls} border border-slate-200" onclick="valLoan(${pr.id})">Recibir directo</button>` : ''}
@@ -740,23 +908,300 @@
             ver(id, 1); render();
         };
 
-        const dl = id => { const d = D.find(x => x.id == id); if (!can(d)) return ver(id); lg('Documento descargado', d.c); tt('Descarga simulada: ' + d.n + '.' + d.t, 'download'); render(); };
+        const dl = id => {
+            const d = D.find(x => x.id == id);
+            if (!can(d)) return ver(id);
+            const f = FILES[id];
+            if (!f) return tt('Este expediente aún no tiene archivo digital', 'warning-circle');
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(f);
+            a.download = (d.fl && d.fl.name) || (d.n + '.' + d.t);
+            document.body.appendChild(a); a.click(); a.remove();
+            setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+            lg('Documento descargado', d.c); tt('Descargando ' + a.download, 'download'); render();
+        };
+
+        // ---------- Archivos: vista previa y adjuntar ----------
+        const fIcon = t => ({ pdf: 'file-pdf', docx: 'file-doc', xlsx: 'file-xls', jpg: 'file-image', jpeg: 'file-image', png: 'file-image' }[t] || 'file');
+        const pv = (d, cust) => {
+            const f = FILES[d.id];
+            if (!f) {
+                const mayAttach = cust || d.b == me.n;
+                return `<div class="mb-8 p-5 rounded-2xl border-2 border-dashed border-sky-200 bg-sky-50/50 flex items-center gap-4">
+                    <div class="w-11 h-11 rounded-xl bg-white text-sky-500 flex items-center justify-center shrink-0 shadow-sm">${ic('paperclip', 'w-5 h-5')}</div>
+                    <div class="flex-1 text-sm"><div class="font-bold text-slate-700">Sin archivo digital</div><div class="text-xs text-slate-500 font-medium mt-0.5">Solo existe el expediente físico.</div></div>
+                    ${mayAttach ? `<label class="${btnCls} !py-2 !px-4 text-sm cursor-pointer">${ic('upload', 'w-4 h-4')} Adjuntar<input type="file" class="hidden" accept=".pdf,.docx,.xlsx,.jpg,.jpeg,.png" onchange="attach(${d.id}, this)"></label>` : ''}
+                </div>`;
+            }
+            const t = (d.fl && d.fl.t) || d.t;
+            const canView = ['pdf', 'jpg', 'jpeg', 'png'].includes(t);
+            return `<div class="mb-8 p-4 rounded-2xl border border-sky-100 bg-gradient-to-r from-sky-50 to-white shadow-sm">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-600 to-sky-400 text-white flex items-center justify-center shrink-0 shadow-md shadow-sky-500/30">${ic(fIcon(t), 'w-6 h-6')}</div>
+                    <div class="flex-1 min-w-0"><div class="text-sm font-bold text-slate-800 truncate">${d.fl ? d.fl.name : d.n}</div><div class="text-xs text-slate-500 font-semibold mt-0.5">${d.fl ? fsz(d.fl.size) + ' · ' : ''}${t.toUpperCase()}</div></div>
+                </div>
+                <div class="grid grid-cols-2 gap-3 mt-4">
+                    <button class="${btnCls} !py-2.5 text-sm" onclick="vw(${d.id})">${ic(canView ? 'eye' : 'file', 'w-4 h-4')} Ver documento</button>
+                    <button class="${btnGhostCls} !py-2.5 text-sm border border-slate-200" onclick="dl(${d.id})">${ic('download', 'w-4 h-4')} Descargar</button>
+                </div>
+            </div>`;
+        };
+
+        // ---------- Visor a pantalla completa ----------
+        let VW = null;
+        const vwDoc = (d, t, url) => {
+            if (t == 'pdf') return `<iframe src="${url}${innerWidth - (innerWidth >= 1024 ? 384 : innerWidth >= 768 ? 320 : 0) >= 1100 ? '#zoom=100' : '#view=FitH'}" class="w-full h-full border-0 bg-[#525659]" title="${d.n}"></iframe>`;
+            if (['jpg', 'jpeg', 'png'].includes(t)) return `<div id="vw-img" class="w-full h-full flex items-center justify-center overflow-auto" data-z="0">
+                    <img src="${url}" alt="${d.n}" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl shadow-black/40 cursor-zoom-in transition-transform duration-300" onclick="vwZoom()">
+                </div>`;
+            return `<div class="max-w-sm text-center bg-white rounded-3xl p-8 shadow-2xl">
+                    <div class="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-600 to-sky-400 text-white flex items-center justify-center mb-4 shadow-lg shadow-sky-500/30">${ic(fIcon(t), 'w-8 h-8')}</div>
+                    <h4 class="font-extrabold text-slate-800 text-lg">El navegador no puede mostrar este archivo</h4>
+                    <p class="text-sm text-slate-500 font-medium mt-2 mb-6">Los archivos Word y Excel se abren en su programa. Descárgalo para verlo.</p>
+                    <button class="${btnCls} w-full" onclick="dl(${d.id})">${ic('download', 'w-4 h-4')} Descargar ${t.toUpperCase()}</button>
+                </div>`;
+        };
+        const vwInfo = d => {
+            const row = (k, v) => `<div class="py-3 border-b border-slate-100 last:border-0"><div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">${k}</div><div class="font-bold text-slate-800 text-sm">${v}</div></div>`;
+            return `<div class="p-5">
+                <h4 class="text-sm font-extrabold text-slate-800 mb-2 flex items-center gap-2">${ic('file', 'w-4 h-4 text-brand-500')} Datos del expediente</h4>
+                ${row('Carpeta', d.f)}${row('Tipo documental', d.k)}${row('Fecha de registro', dt(d.g))}${row('Cargado por', d.b)}
+                ${row('Estado', `<span class="inline-block px-3 py-1 rounded-lg text-[11px] font-bold ${ST[d.e] || 'bg-slate-100'}">${d.e}</span>`)}
+                ${row('Nivel de acceso', d.rs ? `<span class="text-red-600">${ic('lock', 'w-3.5 h-3.5')} Restringido</span>` : `<span class="text-emerald-600">${ic('check', 'w-3.5 h-3.5')} General</span>`)}
+                <h4 class="text-sm font-extrabold text-slate-800 mt-6 mb-1 flex items-center gap-2">${ic('shield', 'w-4 h-4 text-brand-500')} Historial reciente</h4>
+                <div>${L.filter(l => l.d == d.c).slice(0, 6).map(act).join('') || '<div class="py-4 text-slate-400 text-sm font-medium">Sin movimientos registrados</div>'}</div>
+            </div>`;
+        };
+        const vwPaint = () => {
+            const { d, t, url } = VW;
+            const pill = 'inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-bold transition-all active:scale-95';
+            const iconBtn = 'w-10 h-10 rounded-xl flex items-center justify-center transition-all active:scale-95';
+            $('vw').innerHTML = `
+                <div class="relative flex-1 min-w-0 flex items-center justify-center ${t == 'pdf' ? '' : 'p-4 md:p-8'}">${vwDoc(d, t, url)}</div>
+                <div id="vw-shade" class="md:hidden absolute inset-0 bg-black/40 opacity-0 pointer-events-none transition-opacity duration-300" onclick="vwSide(false)"></div>
+                <aside id="vw-side" class="absolute md:static inset-y-0 right-0 w-full sm:w-96 md:w-80 lg:w-96 shrink-0 bg-white md:border-l md:border-sky-100 shadow-2xl md:shadow-none overflow-y-auto translate-x-full md:translate-x-0 transition-transform duration-300 ease-out" aria-label="Datos del expediente">
+                    <div class="sticky top-0 z-10 bg-white/95 backdrop-blur flex items-center gap-3 px-5 py-4 border-b border-sky-100">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-600 to-sky-400 text-white flex items-center justify-center shrink-0">${ic(fIcon(t), 'w-5 h-5')}</div>
+                        <div class="flex-1 min-w-0 leading-tight"><div class="font-bold text-sm text-slate-800 truncate">${d.fl ? d.fl.name : d.n}</div><div class="text-[11px] text-slate-500 font-semibold">${d.c}${d.fl ? ' · ' + fsz(d.fl.size) : ''}</div></div>
+                        <button class="${iconBtn} text-slate-500 hover:bg-sky-50 hover:text-brand-600" title="Descargar" aria-label="Descargar" onclick="dl(${d.id})">${ic('download', 'w-5 h-5')}</button>
+                        <button class="${iconBtn} text-slate-500 hover:bg-red-50 hover:text-red-600" title="Cerrar documento (Esc)" aria-label="Cerrar documento" onclick="vwClose()">${ic('x', 'w-5 h-5')}</button>
+                    </div>
+                    ${vwInfo(d)}
+                </aside>
+                <div class="md:hidden absolute bottom-5 right-5 z-20 flex items-center gap-1 p-1.5 rounded-full bg-brand-950/90 backdrop-blur shadow-2xl shadow-black/40 ring-1 ring-white/10 text-white">
+                    <button class="${pill} hover:bg-white/15" onclick="vwSide()">${ic('info', 'w-4 h-4')} Datos</button>
+                    <button class="${pill} bg-white text-brand-800" onclick="vwClose()">${ic('x', 'w-4 h-4')} Cerrar</button>
+                </div>`;
+        };
+        const vw = id => {
+            const d = D.find(x => x.id == id), f = FILES[id];
+            if (!d || !f || !can(d)) return;
+            VW = { d, t: (d.fl && d.fl.t) || d.t, url: URL.createObjectURL(f), side: false };
+            vwPaint();
+            $('vw').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        };
+        const vwClose = () => {
+            if (!VW) return;
+            $('vw').classList.add('hidden');
+            $('vw').innerHTML = '';
+            URL.revokeObjectURL(VW.url);
+            VW = null;
+            document.body.style.overflow = '';
+        };
+        const vwSide = v => {
+            VW.side = v === undefined ? !VW.side : v;
+            $('vw-side').classList.toggle('translate-x-full', !VW.side);
+            $('vw-shade').classList.toggle('opacity-0', !VW.side);
+            $('vw-shade').classList.toggle('pointer-events-none', !VW.side);
+        };
+        const vwZoom = () => {
+            const w = $('vw-img'), img = w.querySelector('img'), z = w.dataset.z == '1';
+            w.dataset.z = z ? '0' : '1';
+            w.classList.toggle('items-center', z); w.classList.toggle('justify-center', z);
+            img.classList.toggle('max-w-full', z); img.classList.toggle('max-h-full', z);
+            img.classList.toggle('cursor-zoom-in', z); img.classList.toggle('cursor-zoom-out', !z);
+        };
+        document.addEventListener('keydown', e => { if (e.key == 'Escape' && VW) VW.side && innerWidth < 768 ? vwSide(false) : vwClose(); });
+        const chk = f => {
+            const e = f.name.split('.').pop().toLowerCase();
+            if (!EXT.includes(e)) { tt('Formato no permitido. Usa PDF, Word, Excel, JPG o PNG.', 'x'); return null; }
+            if (f.size > MAXF) { tt('El archivo pesa ' + fsz(f.size) + '. El máximo es 10 MB.', 'x'); return null; }
+            return e == 'jpeg' ? 'jpg' : e;
+        };
+        const attach = (id, inp) => {
+            const f = inp.files[0]; if (!f) return;
+            const t = chk(f); if (!t) return;
+            const d = D.find(x => x.id == id);
+            FILES[id] = f; idbPut(id, f);
+            d.fl = { name: clean(f.name), size: f.size, t }; d.t = t;
+            lg('Archivo adjuntado', d.c); tt('Archivo adjuntado a ' + d.c, 'paperclip');
+            save(); ver(id, 1);
+        };
         const solic = id => { const d = D.find(x => x.id == id); Q.unshift({ id: Date.now(), doc: id, u: me.n, ts: Date.now(), st: 'Pendiente' }); lg('Acceso solicitado', d.c); tt('Solicitud enviada al administrador', 'check'); ver(id, 1); render(); };
         const res = (qid, ok) => { const q = Q.find(x => x.id == qid), d = D.find(x => x.id == q.doc); q.st = ok ? 'Aprobada' : 'Rechazada'; if (ok) d.gr.push(q.u); lg(ok ? 'Acceso aprobado' : 'Acceso rechazado', d.c, q.u); tt('Solicitud ' + q.st.toLowerCase(), ok ? 'check' : 'x'); render(); };
-        const pm = (i, v) => { U[i].s = v ? 1 : 0; lg('Permisos actualizados', U[i].n); tt(v ? 'Acceso a restringidos ON' : 'Acceso a restringidos OFF', 'shield'); render(); };
-        const bk = () => { B.unshift({ ts: Date.now(), s: (12.5 + B.length / 10).toFixed(1) + ' MB' }); lg('Respaldo creado', 'Manual'); tt('Respaldo creado con éxito', 'check'); render(); };
-        const fl = i => { const f = i.files[0]; if (!f) return; $('un').value = f.name.replace(/\.[^.]+$/, ''); const e = f.name.split('.').pop().toLowerCase(); if (['pdf', 'docx', 'xlsx'].includes(e)) $('ut').value = e; };
+        const pm = (i, v) => { U[i].s = v ? 1 : 0; lg('Permisos actualizados', U[i].n); tt(v ? U[i].n + ' ahora puede ver restringidos' : U[i].n + ' ya no ve restringidos', 'shield'); render(); };
 
-        const up = () => mo(`
-            <div class="mb-8">
-                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Archivo (opcional)</label>
-                <div class="relative border-2 border-dashed border-slate-300 rounded-2xl p-8 text-center hover:bg-brand-50 hover:border-brand-300 transition-colors group cursor-pointer">
-                    <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="fl(this)">
-                    <div class="text-slate-400 flex flex-col items-center gap-3">
-                        <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center group-hover:bg-brand-100 group-hover:text-brand-500 transition-colors">${ic('upload', 'w-6 h-6')}</div>
-                        <span class="text-sm font-bold group-hover:text-brand-600 transition-colors">Haz clic o arrastra un archivo aquí</span>
+        // ---------- Usuarios: crear, editar, desactivar ----------
+        const admins = () => U.filter(u => u.a && !u.x).length;
+        const uForm = i => {
+            const e = i !== undefined, u = e ? U[i] : { n: '', r: '', a: 0, s: 0 };
+            CB = { all: [...new Set(U.map(x => x.r))].filter(c => c && c != 'Sin cargo'), i: -1 };
+            const lbl = 'block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2';
+            mo(`
+                <div class="mb-6">
+                    <label class="${lbl}" for="nu-n">Nombre completo</label>
+                    <input id="nu-n" value="${u.n}" placeholder="Juan Ramírez" class="${inputCls} bg-slate-50 font-medium" oninput="$('nu-err').textContent=''">
+                    <div id="nu-err" class="text-xs font-bold text-red-600 mt-2"></div>
+                </div>
+                <div class="mb-6">
+                    <label class="${lbl}" for="nu-r">Cargo</label>
+                    <div class="relative">
+                        <input id="nu-r" value="${u.r}" placeholder="Elige o escribe un cargo" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="cb-list" aria-autocomplete="list"
+                            class="${inputCls} bg-slate-50 font-medium pr-11" onfocus="cbOpen()" onclick="cbOpen()" oninput="CB.i = -1; cbOpen()" onkeydown="cbKey(event)" onblur="setTimeout(cbClose, 120)">
+                        <span id="cb-chev" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none transition-transform duration-200">${ic('caret-down', 'w-4 h-4')}</span>
+                        <ul id="cb-list" role="listbox" class="hidden absolute z-30 left-0 right-0 mt-2 p-1.5 bg-white rounded-2xl shadow-xl shadow-brand-900/10 ring-1 ring-sky-100 max-h-64 overflow-y-auto animate-fade-in"></ul>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-2">El cargo "Responsable de archivo" puede gestionar préstamos.</p>
+                </div>
+                <div class="mb-6">
+                    <span class="${lbl}">Rol en el sistema</span>
+                    <div class="grid grid-cols-2 gap-3">
+                        ${[[0, 'Usuario', 'Consulta y registra'], [1, 'Administrador', 'Control total']].map(([v, t, s]) => `
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="nu-a" value="${v}" class="peer sr-only" ${u.a == v ? 'checked' : ''}>
+                            <div class="p-4 rounded-2xl border-2 border-slate-200 peer-checked:border-brand-500 peer-checked:bg-brand-50 peer-focus-visible:ring-4 peer-focus-visible:ring-brand-500/20 hover:border-brand-300 transition-all">
+                                <div class="font-bold text-sm text-slate-800">${t}</div>
+                                <div class="text-xs text-slate-500 font-medium mt-0.5">${s}</div>
+                            </div>
+                        </label>`).join('')}
                     </div>
                 </div>
+                <label class="flex items-center justify-between gap-4 p-4 rounded-2xl bg-sky-50/60 border border-sky-100 mb-8 cursor-pointer">
+                    <span><span class="block font-bold text-sm text-slate-800">${ic('lock', 'w-4 h-4 text-brand-600')} Ver expedientes restringidos</span><span class="block text-xs text-slate-500 font-medium mt-1">Los administradores siempre pueden verlos.</span></span>
+                    <input type="checkbox" id="nu-s" class="sw shrink-0" ${u.s ? 'checked' : ''}>
+                </label>
+                <div class="flex gap-3 justify-end pt-5 border-t border-slate-100">
+                    <button class="${btnGhostCls}" onclick="cl()">Cancelar</button>
+                    <button class="${btnCls}" onclick="uSave(${e ? i : ''})">${ic('check', 'w-4 h-4')} ${e ? 'Guardar cambios' : 'Crear usuario'}</button>
+                </div>
+            `, e ? 'Editar usuario' : 'Nuevo usuario');
+            setTimeout(() => $('nu-n') && $('nu-n').focus(), 320);
+        };
+        // ---------- Desplegable de cargos ----------
+        let CB = { all: [], i: -1 };
+        const cbItems = () => {
+            const q = clean($('nu-r').value).toLowerCase();
+            const list = CB.all.filter(c => !q || c.toLowerCase().includes(q));
+            const exact = CB.all.some(c => c.toLowerCase() == q);
+            return q && !exact ? [...list, { nuevo: clean($('nu-r').value) }] : list;
+        };
+        const cbOpen = () => {
+            const ul = $('cb-list'); if (!ul) return;
+            const items = cbItems(), cur = $('nu-r').value;
+            if (!items.length) return cbClose();
+            ul.innerHTML = items.map((c, k) => {
+                const on = k == CB.i, sel = !c.nuevo && c == cur;
+                return `<li role="option" id="cb-${k}" aria-selected="${sel}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer text-sm font-semibold transition-colors ${on ? 'bg-brand-50 text-brand-700' : 'text-slate-700 hover:bg-sky-50'}" onmousedown="event.preventDefault(); cbPick(${k})">
+                    ${c.nuevo
+                        ? `<span class="w-7 h-7 rounded-lg bg-sky-100 text-brand-600 flex items-center justify-center shrink-0">${ic('plus', 'w-4 h-4')}</span><span>Usar <b class="text-brand-700">${c.nuevo}</b> como nuevo cargo</span>`
+                        : `<span class="w-7 h-7 rounded-lg ${sel ? 'bg-gradient-to-br from-brand-600 to-sky-400 text-white' : 'bg-slate-100 text-slate-400'} flex items-center justify-center shrink-0">${ic('briefcase', 'w-4 h-4')}</span><span class="flex-1">${c}</span>${sel ? ic('check', 'w-4 h-4 text-brand-600') : ''}`}
+                </li>`;
+            }).join('');
+            ul.classList.remove('hidden');
+            $('nu-r').setAttribute('aria-expanded', 'true');
+            $('cb-chev').classList.add('rotate-180');
+            const a = $('cb-' + CB.i); a && a.scrollIntoView({ block: 'nearest' });
+        };
+        const cbClose = () => {
+            const ul = $('cb-list'); if (!ul) return;
+            ul.classList.add('hidden');
+            $('nu-r').setAttribute('aria-expanded', 'false');
+            $('cb-chev').classList.remove('rotate-180');
+            CB.i = -1;
+        };
+        const cbPick = k => {
+            const c = cbItems()[k]; if (!c) return;
+            $('nu-r').value = c.nuevo || c;
+            cbClose();
+        };
+        const cbKey = e => {
+            const n = cbItems().length, open = !$('cb-list').classList.contains('hidden');
+            if (e.key == 'ArrowDown') { e.preventDefault(); CB.i = open ? (CB.i + 1) % n : 0; cbOpen(); }
+            else if (e.key == 'ArrowUp') { e.preventDefault(); CB.i = (CB.i - 1 + n) % n; cbOpen(); }
+            else if (e.key == 'Enter' && open && CB.i >= 0) { e.preventDefault(); cbPick(CB.i); }
+            else if (e.key == 'Escape' && open) { e.preventDefault(); e.stopPropagation(); cbClose(); }
+        };
+
+        const uSave = i => {
+            const e = i !== undefined;
+            const nm = clean($('nu-n').value).replace(/\s+/g, ' ');
+            const r = clean($('nu-r').value) || 'Sin cargo';
+            const a = +document.querySelector('input[name="nu-a"]:checked').value;
+            const s = $('nu-s').checked ? 1 : 0;
+            if (nm.length < 3) return $('nu-err').textContent = 'Escribe el nombre completo.';
+            if (U.some((x, j) => j !== i && x.n.toLowerCase() == nm.toLowerCase())) return $('nu-err').textContent = 'Ya existe un usuario con ese nombre.';
+            if (e) {
+                const u = U[i];
+                if (u.a && !a && admins() <= 1) return $('nu-err').textContent = 'Debe quedar al menos un administrador activo.';
+                if (u.n !== nm) {
+                    D.forEach(d => { if (d.b == u.n) d.b = nm; d.gr = d.gr.map(g => g == u.n ? nm : g); });
+                    P.forEach(p => { if (p.u == u.n) p.u = nm; });
+                    Q.forEach(q => { if (q.u == u.n) q.u = nm; });
+                }
+                Object.assign(u, { n: nm, r, a, s: a ? 1 : s });
+                lg('Usuario editado', nm); tt('Cambios guardados', 'check');
+            } else {
+                U.push({ n: nm, r, a, s: a ? 1 : s, x: 0 });
+                lg('Usuario creado', nm); tt(nm + ' ya puede ingresar al sistema', 'user-plus');
+            }
+            cl();
+        };
+        const uTog = i => {
+            const u = U[i];
+            if (u === me) return tt('No puedes desactivar tu propia cuenta', 'lock');
+            if (!u.x && u.a && admins() <= 1) return tt('Debe quedar al menos un administrador activo', 'lock');
+            u.x = u.x ? 0 : 1;
+            lg(u.x ? 'Usuario desactivado' : 'Usuario reactivado', u.n);
+            tt(u.x ? u.n + ' ya no podrá ingresar' : u.n + ' puede volver a ingresar', u.x ? 'user-minus' : 'user-check');
+            render();
+        };
+        const bk = () => { B.unshift({ ts: Date.now(), s: (12.5 + B.length / 10).toFixed(1) + ' MB' }); lg('Respaldo creado', 'Manual'); tt('Respaldo creado con éxito', 'check'); render(); };
+        const fl = i => {
+            const f = i.files[0]; i.value = '';
+            if (!f) return;
+            const t = chk(f); if (!t) return;
+            UF = { f, t };
+            if (!$('un').value.trim()) $('un').value = clean(f.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' '));
+            $('ut').value = t;
+            fz();
+        };
+        const fzClear = () => { UF = null; fz(); };
+        const fz = () => {
+            const z = $('fz'); if (!z) return;
+            if (UF) {
+                z.innerHTML = `<div class="flex items-center gap-4 p-4 rounded-2xl border-2 border-brand-300 bg-gradient-to-r from-sky-50 to-white animate-fade-in">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-600 to-sky-400 text-white flex items-center justify-center shrink-0 shadow-md shadow-sky-500/30">${ic(fIcon(UF.t), 'w-6 h-6')}</div>
+                    <div class="flex-1 min-w-0"><div class="font-bold text-sm text-slate-800 truncate">${clean(UF.f.name)}</div><div class="text-xs text-slate-500 font-semibold mt-0.5">${fsz(UF.f.size)} · listo para subir</div></div>
+                    <button class="p-2 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors" aria-label="Quitar archivo" onclick="fzClear()">${ic('x', 'w-5 h-5')}</button>
+                </div>`;
+            } else {
+                z.innerHTML = `<div class="relative border-2 border-dashed border-sky-300 bg-sky-50/40 rounded-2xl p-8 text-center hover:bg-sky-50 hover:border-brand-400 transition-all duration-200 group cursor-pointer"
+                    ondragenter="this.classList.add('dz-over')" ondragleave="this.classList.remove('dz-over')" ondrop="this.classList.remove('dz-over')">
+                    <input type="file" accept=".pdf,.docx,.xlsx,.jpg,.jpeg,.png" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="fl(this)" aria-label="Elegir archivo">
+                    <div class="text-slate-500 flex flex-col items-center gap-3 pointer-events-none">
+                        <div class="w-14 h-14 rounded-2xl bg-white text-brand-500 shadow-sm flex items-center justify-center group-hover:-translate-y-1 group-hover:shadow-md group-hover:shadow-sky-500/20 transition-all">${ic('upload', 'w-7 h-7')}</div>
+                        <span class="text-sm font-bold text-brand-700">Haz clic o arrastra un archivo aquí</span>
+                        <span class="text-xs font-medium text-slate-400">PDF, Word, Excel, JPG o PNG · máx. 10 MB</span>
+                    </div>
+                </div>`;
+            }
+        };
+
+        const up = () => { mo(`
+            <div class="mb-8">
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Archivo (opcional)</label>
+                <div id="fz"></div>
             </div>
             
             <div class="mb-6">
@@ -778,7 +1223,7 @@
             <div class="grid grid-cols-2 gap-5 mb-8">
                 <div>
                     <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Formato</label>
-                    <select id="ut" class="${inputCls} bg-slate-50 cursor-pointer font-medium uppercase">${op(['pdf', 'docx', 'xlsx'])}</select>
+                    <select id="ut" class="${inputCls} bg-slate-50 cursor-pointer font-medium uppercase">${op(['pdf', 'docx', 'xlsx', 'jpg', 'png'])}</select>
                 </div>
                 <div class="flex items-end pb-2">
                     <label class="flex items-center gap-3 cursor-pointer group bg-slate-50 p-2.5 rounded-xl border border-slate-200 w-full hover:border-red-200 transition-colors">
@@ -797,20 +1242,24 @@
                 <button class="${btnGhostCls}" onclick="cl()">Cancelar</button>
                 <button class="${btnCls}" onclick="sv()">${ic('check', 'w-4 h-4')} Guardar expediente</button>
             </div>
-        `, 'Nuevo Registro');
+        `, 'Nuevo Registro'); UF = null; fz(); };
 
         const sv = () => {
-            const nm = $('un').value.trim();
-            if (!nm) return tt('Error: Escribe el nombre del documento', 'x');
+            const nm = clean($('un').value);
+            if (!nm) { $('un').focus(); return tt('Escribe el nombre del documento', 'x'); }
             n++;
             const d = { id: n, c: 'EXP-2026-' + String(n).padStart(3, '0'), n: nm, f: $('uf').value, t: $('ut').value, k: $('uk').value, g: 0, b: me.n, rs: $('ur').checked ? 1 : 0, e: 'Ingresado', gr: $('ur').checked ? [me.n] : [] };
+            if (UF) {
+                FILES[d.id] = UF.f; idbPut(d.id, UF.f);
+                d.fl = { name: clean(UF.f.name), size: UF.f.size, t: UF.t }; d.t = UF.t;
+            }
             D.unshift(d);
             lg('Documento cargado', d.c);
             cl();
-            tt('Registrado exitosamente: ' + d.c, 'check');
+            tt('Registrado: ' + d.c + (d.fl ? ' con archivo adjunto' : ''), 'check');
         };
 
-        lgn();
+        idbOpen().then(idbLoadAll).then(lgn);
     </script>
 </body>
 
